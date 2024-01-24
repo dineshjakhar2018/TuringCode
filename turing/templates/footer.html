@@ -1,0 +1,16 @@
+    {% load static %}
+        <div class="social-media">
+            <a href="https://youtube.com/@turingcodegate?si=TFa5hxgeHrnTDOkO" target="_blank"><img src="{% static 'assets/img/youtube.png' %}"></a>
+            <a href="https://t.me/turingcodecse" target="_blank"> <img src="{% static 'assets/img/Telegram_logo.png' %}"></a>
+            <a href="#"><img src="{% static 'assets/img/x-logo.png' %}"></a>
+            <a href="https://whatsapp.com/channel/0029VaA7peGCxoAuTHlIQ43B" target="_blank"><img src="{% static 'assets/img/whatsapp.png' %}"></a>
+            <a href="#"><img src="{% static 'assets/img/facebook.png' %}"></a>
+        </div>
+        <div class="footer">
+            <p> Copyright © 2024 All Rights Reserved Turing Code   </p>
+        </div>
+        <div class="policy">
+            <a href="{% url 'terms&conditions' %}" target="_blank"> <p> Terms & Condition </p> </a>
+            <a href="{% url 'privacy-policy' %}" target="_blank"> <p> Privacy Policy </p> </a>
+            <a href="{% url 'refund-policy' %}" target="_blank"> <p> Refund Policy </p> </a>
+        </div>

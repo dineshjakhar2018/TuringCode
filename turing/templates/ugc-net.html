@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-6.css' %}" type="text/css" media="all">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <div class="gate-header">
+            <h3> UGC NET/JRF Computer Science </h3>
+        </div>
+
+        <div class="gate-content">
+            <div class="gate-content-1">
+                {% autoescape off %}
+                    {{ NetContent.about_net_exam }}
+                {% endautoescape %}
+            </div>
+
+            <div class="gate-content-2">
+                
+                <div class="course">
+                    {% if NetContent != 'Not Found'%}
+                        {% if NetContent.show_content == 'TestSeries' %}
+
+                            <div class="course-content">
+                                <img src="{{ TestSeries.poster.url }}">
+                                <h2 id="course-name"> {{ TestSeries.title }} </h2>
+                                <p>  🕑 Validity : {{ TestSeries.validity }} Days </p>
+                                <h4> &#8377; {{ TestSeries.price }} <span id="course-total-price"> &#8377; {{ TestSeries.total_price }}</span></h4>
+                                <div class="test-course-button">
+                                    <a href="http://turingcode.in/test-series-content/{{ TestSeries.slug }}" target="_blank"> <input type="button" id="test-course-demo-button" value="Details"></a>
+                                    <a href="http://turingcode.in/test-series/test-series-details/{{ TestSeries.slug }}"> <input type="button" id="test-course-enroll-button" value="Enroll Now"> </a>
+                                </div>
+                            </div>
+
+                        {% else %}
+
+                            <div class="course-content">
+                                <img src="{{ Course.poster.url }}">
+                                <h2 id="course-name"> {{ Course.name }} </h2>
+                                <p>  🕑 Validity : {{ Course.validity }} Days </p>
+                                <h4> &#8377; {{ Course.price }} <span id="course-total-price"> &#8377; {{ Course.total_price }}</span></h4>
+                                <div class="test-course-button">
+                                    <a href="http://turingcode.in/course-details/{{ Course.slug }}" target="_blank"> <input type="button" id="test-course-demo-button" value="Details"></a>
+                                    <a href="http://turingcode.in/courses/course-details/{{ Course.slug }}"> <input type="button" id="test-course-enroll-button" value="Enroll Now"> </a>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+            </div>
+            
+        </div>
+
+        {% include 'footer.html' %}
+
+        <!-- Mobile menu-->
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "280px";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+    </body>
+</html>

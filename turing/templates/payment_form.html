@@ -1,0 +1,46 @@
+<!-- payment_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Razorpay Payment</title>
+</head>
+<body>
+    <h2>Product Purchase</h2>
+    <form action="{% url 'payment_view' %}" method="post">
+        {% csrf_token %}
+        <label for="amount">Amount (in INR):</label>
+        <input type="number" id="amount" name="amount" required>
+        <button type="submit">Pay with Razorpay</button>
+    </form>
+    {% if order %}
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            var options = {
+                "key": "{{ order.key }}",
+                "amount": {{ order.amount }},
+                "currency": "INR",
+                "name": "Turing Code",
+                "description": "Payment for Product Purchase",
+                "image": "/static/assets/img/logo.png",
+                "order_id": "{{ order.id }}",
+                "handler": function (response){
+                    alert(response.razorpay_payment_id);
+                    // Handle the payment success/failure on the backend
+                },
+                "prefill": {
+                    "name": "Dinesh Kumar Jakhar",
+                    "email": "dineshjakhar588@gmail.com",
+                },
+                "theme": {
+                    "color": "#F37254"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response){
+                alert(response.error.description);
+            });
+            document.getElementById('amount').value = {{ order.amount }} / 100; // Display amount in INR
+        </script>
+    {% endif %}
+</body>
+</html>

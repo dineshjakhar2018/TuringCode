@@ -1,0 +1,91 @@
+
+{% load static %}
+           <!-- Mobile Header start here -->
+            <div class="mob-header">
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <div class="menu-top-1">
+                        <div class="profile-pic">
+                            {% if student.student_info_set.all %}
+                                {% for info in student.student_info_set.all %}
+                                    <img src="{{ info.profile_pic.url }}">
+                                {% endfor %}
+                            {% else %}
+                                <img src="{% static 'assets/img/165.png' %}">
+                            {% endif %}
+                        </div>
+                        <p>{{ student.name|title }}</p>
+                    </div>
+
+                    <div class="menu-top-2">
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'home' %}"> <img id="menu-icon" src="{% static 'assets/img/home.png' %}"> <span {% if request.path == '/' or request.path == '/home/' %} id="menu-active" {% endif %}  class="menu-name">Home</span></a>
+                        </div>
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'courses' %}"> <img id="menu-icon" src="{% static 'assets/img/education.png' %}"> <span {% if '/courses/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Courses</span></a>
+                        </div>
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'test-series' %}"> <img id="menu-icon" src="{% static 'assets/img/exam (1).png' %}"> <span {% if '/test-series/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Test Series</span></a>
+                        </div>
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'notes' %}"> <img id="menu-icon" src="{% static 'assets/img/note.png' %}"> <span {% if '/notes/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Notes</span></a>
+                        </div>
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'profile' %}"> <img id="menu-icon" src="{% static 'assets/img/profile.png' %}"> <span {% if '/profile/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Profile</span></a>
+                        </div>
+                        <div class="menu-bar">
+                            <a id="menu-link" href="{% url 'logout' %}"> <img id="menu-icon" src="{% static 'assets/img/exit.png' %}"> <span id="" class="menu-name">Logout</span></a>
+                        </div>
+                    </div>
+                    <div class="menu-top-3">
+                        <img src="{% static 'assets/img/logo.png' %}">
+                    </div>
+                </div>
+                
+                <span id="mob-menu-button" onclick="openNav()">&#9776;</span>
+                <div class="mob-header-logo">
+                    <img src="{% static 'assets/img/logo.png' %}">
+                </div>
+            </div>
+            <!-- Mobile Header end here -->
+
+            <!-- Menu start here -->
+            <div class="content-menu">
+                <div class="menu-top-1">
+                    <div class="profile-pic">
+                        {% if student.student_info_set.all %}
+                            {% for info in student.student_info_set.all %}
+                                <img src="{{ info.profile_pic.url }}">
+                            {% endfor %}
+                        {% else %}
+                            <img src="{% static 'assets/img/165.png' %}">
+                        {% endif %}
+                        
+                    </div>
+                    <p> {{ student.name|title }} </p>
+                </div>
+                <div class="menu-top-2">
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'home' %}"> <img id="menu-icon" src="{% static 'assets/img/home.png' %}"> <span {% if request.path == '/' or request.path == '/home/' %} id="menu-active" {% endif %}  class="menu-name">Home</span></a>
+                    </div>
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'courses' %}"> <img id="menu-icon" src="{% static 'assets/img/education.png' %}"> <span {% if '/courses/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Courses</span></a>
+                    </div>
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'test-series' %}"> <img id="menu-icon" src="{% static 'assets/img/exam (1).png' %}"> <span {% if '/test-series/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Test Series</span></a>
+                    </div>
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'notes' %}"> <img id="menu-icon" src="{% static 'assets/img/note.png' %}"> <span {% if '/notes/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Notes</span></a>
+                    </div>
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'profile' %}"> <img id="menu-icon" src="{% static 'assets/img/profile.png' %}"> <span {% if '/profile/' in request.path  %} id="menu-active" {% endif %} class="menu-name">Profile</span></a>
+                    </div>
+                    <div class="menu-bar">
+                        <a id="menu-link" href="{% url 'logout' %}"> <img id="menu-icon" src="{% static 'assets/img/exit.png' %}"> <span id="" class="menu-name">Logout</span></a>
+                    </div>
+                </div>
+                <div class="menu-top-3">
+                    <img src="{% static 'assets/img/logo.png' %}">
+                </div>
+            </div>
+            <!-- Menu End here-->

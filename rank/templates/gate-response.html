@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code - GATE 2024 Rank Predictor</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static "assets/css/rank-style-2.css" %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+        <div class="header">
+            <div class="logo">
+                <img src="{% static "assets/img/logo.png" %}">
+            </div>
+            <div class="exam-name-heading">
+                <h3> GATE 2024 {{ data.subject }} </h3>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div class="left">
+                <div class="analysis">
+                    <div class="analysis-left">
+                        <img src="{% static "assets/img/ranking.png" %}">
+                    </div>
+                    <div class="analysis-right">
+                        <h4>{{data.air}}</h4>
+                        <h5>Rank Estimate</h5>
+                    </div>
+                </div>
+                <div class="analysis">
+                    <div class="analysis-left">
+                        <img src="{% static "assets/img/top-three.png" %}">
+                    </div>
+                    <div class="analysis-right">
+                        <h4>{{ data.current_rank }} / {{ data.total_current_student}}</h4>
+                        <h5>Current Rank</h5>
+                    </div>
+                </div>
+                <div class="analysis">
+                    <div class="analysis-left">
+                        <img src="{% static "assets/img/button.png" %}">
+                    </div>
+                    <div class="analysis-right">
+                        <h4>{{ data.TotalMarks }}</h4>
+                        <h5>Total Marks</h5>
+                    </div>
+                </div>
+                <div class="analysis">
+                    <div class="analysis-left">
+                        <img src="{% static "assets/img/check-mark.png" %}">
+                    </div>
+                    <div class="analysis-right">
+                        <h4>{{ data.TotalMarks }}</h4>
+                        <h5>Normalised Marks</h5>
+                    </div>
+                </div>
+                <div class="analysis">
+                    <div class="analysis-left">
+                        <img src="{% static "assets/img/examination.png" %}">
+                    </div>
+                    <div class="analysis-right">
+                        <h4>560</h4>
+                        <h5>Expected Score</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="marks-analysis">
+                <div class="exam-mark-analysis">
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>1 Mark</th>
+                            <th>2 Mark</th>
+                            <th>Total</th>
+                        </tr>
+    
+                        <tr>
+                            <td>Attempted</td>
+                            <td>{{ data.AttemptedMark1Ques }} / {{ data.total_1_marks_questions }}</td>
+                            <td>{{ data.AttemptedMark2Ques }} / {{ data.total_2_marks_questions }} </td>
+                            <td>{{ data.total_attempted }} / {{ data.total_question_in_paper }}</td>
+                        </tr>
+    
+                        <tr>
+                            <td>Correct</td>
+                            <td>{{ data.CorrectMark1Ques }}</td>
+                            <td>{{ data.CorrectMark2Ques }}</td>
+                            <td>{{ data.total_correct_question }}</td>
+                        </tr>
+    
+                        <tr>
+                            <td>+ve</td>
+                            <td>{{ data.Positive1Marks }}</td>
+                            <td>{{ data.Positive2Marks }}</td>
+                            <td>{{ data.total_positive_marks }}</td>
+                        </tr>
+    
+                        <tr>
+                            <td>-ve</td>
+                            <td>{{ data.Negative1Marks }}</td>
+                            <td>{{ data.Negative2Marks }}</td>
+                            <td>{{ data.total_negative }}</td>
+                        </tr>
+    
+                        <tr>
+                            <td>Total Marks</td>
+                            <td>{{ data.total_1_mark }}</td>
+                            <td>{{ data.total_2_mark}}</td>
+                            <td>{{ data.TotalMarks }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="qualifying-marks-analysis">
+                    <div class="qualifying-heading">
+                        <h4>Estimate Qualifying Marks</h4>
+                    </div>
+                    <div class="qualifying-category">
+                            <h4> 28.5 </h4>
+                            <p> General</p>
+                    </div>
+
+                    <div class="qualifying-category">
+                        <h4> 22.5 </h4>
+                        <p> OBC(NCL)/EWS</p>
+                    </div>
+
+                    <div class="qualifying-category">
+                        <h4> 28.5 </h4>
+                        <p> SC/ST/PWD</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <!-- Video.js setup -->
+        <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+        <script src="https://vjs.zencdn.net/7.16.0/video.min.js"></script>
+
+        <!-- Plyr -->
+        <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css" />
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+
+        <div class="content">
+            
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2>Home</h2>
+                </div>
+
+                <div id="promotional-video" class="video-content">
+                    <div class="video-content-1">
+                        <div class="container">
+                            <!-- Video Player with Multiple Quality Options -->
+                            <video id="myVideo" controls poster="{{ video.thumbnail.url }}">
+                                <source src="{{ video.video.url }}" type="video/mp4" label="720p" size="720">
+                                <source src="{{ video.video.url }}" type="video/mp4" label="480p" size="480">
+                                <!-- Add additional source elements for different quality options -->
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+
+                    <div class="home-content">
+                        <div class="page-content">
+                            <div class="course">
+
+                                <!-- Test series start here-->
+                                {% for item in EnrollTestSeries %}
+                                        <div {% if item.remaning_days < 0 %} id="course-expire" {% endif %} class="course-content">
+                                            <img src="{{ item.testseries.poster.url }}">
+                                            <h2 id="course-name"> {{ item.testseries.title }} </h2>
+                                            <p>  🕑 {% if item.remaning_days > 0 %}Expire in : {{ item.remaning_days }} Days {% else %} Expired {% endif %} </p>
+                                            <div class="course-button">
+                                                {% if item.remaning_days > 0 %}
+                                                    <a href="http://turingcode.in/test-series/test-series-details/{{ item.testseries.slug }}"><input type="button" id="home-course-enroll-button" value="View Test"></a>
+                                                {% else %}
+                                                    <img id="expire-image" src="{% static 'assets/img/expire.jpg' %}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                {% endfor %}
+                                <!-- Test Series end here -->
+
+                                <!-- Courses start here-->
+                                {% for item in EnrollCourses %}
+                                        <div {% if item.remaning_days < 0 %} id="course-expire" {% endif %} class="course-content">
+                                            <img src="{{ item.course.poster.url }}">
+                                            <h2 id="course-name"> {{ item.course.name }} </h2>
+                                            <p>  🕑 {% if item.remaning_days > 0 %}Expire in : {{ item.remaning_days }} Days {% else %} Expired {% endif %} </p>
+                                            <div class="course-button">
+                                                {% if item.remaning_days > 0 %}
+                                                    <a href="http://turingcode.in/courses/course-details/{{ item.course.slug }}"><input type="button" id="home-course-enroll-button" value="View Course"></a>
+                                                {% else %}
+                                                    <img id="expire-image" src="{% static 'assets/img/expire.jpg' %}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                {% endfor %}
+                                <!-- Courses end here -->
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+        </div>
+        
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+        <script>
+            var player = videojs('my-video');
+        
+            function changeSpeed(speed) {
+                player.playbackRate(speed);
+            }
+        
+            function changeQuality(source) {
+                player.src(source.src);
+                player.play();
+            }
+        
+            var qualityControlButton = document.createElement('select');
+            qualityControlButton.className = 'vjs-quality-control-button vjs-control';
+            qualityControlButton.innerHTML = `
+                <option value="1.mp4" style="width: 100px;">1080p</option>
+                <option value="2.mp4">720p</option>
+                <option value="3.mp4">480p</option>
+            `;
+            qualityControlButton.onchange = function() {
+                var selectedSource = this.value;
+                var sources = player.options().sources;
+                var selectedSourceObject = sources.find(source => source.src === selectedSource);
+                changeQuality(selectedSourceObject);
+            };
+        
+            var speedOptions = [1, 0.5, 1.5, 1.75, 2];
+            var speedControl = document.createElement('select');
+            speedControl.className = 'vjs-quality-control-button vjs-control';
+            speedOptions.forEach(function (speed) {
+                var option = document.createElement('option');
+                option.value = speed;
+                option.innerHTML = speed + 'x';
+                speedControl.appendChild(option);
+            });
+            speedControl.onchange = function () {
+                var selectedSpeed = parseFloat(this.value);
+                changeSpeed(selectedSpeed);
+            };
+        
+            var spacer = document.createElement('span');
+            spacer.innerHTML = "&nbsp;"; // Add a space for better separation
+        
+            var controlBar = player.controlBar.addChild('component');
+            controlBar.el().appendChild(qualityControlButton);
+            controlBar.el().appendChild(spacer);
+            controlBar.el().appendChild(speedControl);
+            
+        </script>
+        <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+        <script src="https://cdn.plyr.io/3.6.8/plyr.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Plyr
+            const player = new Plyr('#myVideo');
+
+            // Wait for the video metadata to be loaded
+            player.on('loadedmetadata', () => {
+                // Set the starting time to 1 minute and 35 seconds
+                const startTimeInSeconds = 0; // 60 seconds for 1 minute + 35 seconds
+                player.currentTime = startTimeInSeconds;
+            });
+
+            // Wait for the video to be ready to play
+            
+        });
+    </script>
+    </body>
+</html>

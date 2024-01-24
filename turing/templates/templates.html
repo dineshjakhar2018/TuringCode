@@ -1,0 +1,2268 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-1.css' %}" type="text/css" media="all">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+        
+       <div id="content" class="content">
+            <div class="content-left">
+                <div class="pc-content">
+                    <div class="logo">
+                        <img src="{% static 'assets/img/logo.png' %}">
+                        <p>Turing Code Online Test series for UGC NET/JRF (Computer Science and Application) and GATE (CS/IT) </p>
+                    </div>
+                    <div class="calculator">
+                        <div class="calculator-left">
+                            <button id="paper-name-button"> {{ TestName}} </button>
+                        </div>
+                        <div class="calculator-right">
+                            <i id="fa" class="fa fa-calculator"></i>
+                        </div>
+                    </div>
+                </div>
+            <form id="myForm">
+                    {% csrf_token %}
+                <div class="quescontent" id="quescontent">
+                    {% for question in Questions %}
+                        <div class="item">
+                            <div class="paper-section">
+                                <div class="paper-section-left">
+                                    {% for x in PaperName %}
+                                        {% if x != None %}
+                                        <input type="button" {% if x == question.paper_name %}id="paper-section-left-active"{% else %} id="paper-section-left-inactive" {% endif %} value="{{ x }}" onclick="goToPaper({{ forloop.counter }})">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="paper-section-right">
+                                    <p>Time Left <span id="timer-{{forloop.counter}}"></span></p>
+                                </div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-left">
+                                    <h3>Question Type : {{ question.question_type }}</h3>
+                                </div>
+                                <div class="question-type-right">
+                                    <p>Mark for correct answer <span style="color:green">{{ question.positive_marks }}</span> | Negative marks <span style="color:red;"> {{ question.negative_marks }} </span></p>
+                                </div>
+                            </div>
+
+                            <div class="question-no">
+                                <h4>
+                                    {% if question.paper == 1 %}
+                                        Question No. {{question.question_no}}
+                                    {% else %}
+                                        Question No. {% with difference=question.question_no|subtract:TotalQuestionInPaper1 %} {{ difference }} {% endwith %}
+                                    {% endif %}
+                                </h4>
+                            </div>
+                            <div class="question">
+                                <div class="pc-question-content">
+                                    <div class="question-view">
+                                        <img src="{{ question.question_img.url }}">
+                                    </div>
+                                    {% if question.question_type == 'NAT' %}
+                                            <div class="numeric-plate">
+                                                <div class="numeric-plate-content">
+                                                    <input type="text" id="nat-answer{{question.question_no}}" value="{% spaceless %}{% for student_ans in question.student_answer_set.all %}{% if student_ans.answer != 'e' and student_ans.student_id == StudentId %}{{student_ans.answer}}{% endif %}{% endfor %}{% endspaceless %}" onkeypress="return onlyNumberKey{{question.question_no}}(event)" onfocus="removeSpaces{{question.question_no}}(this)" autocomplete="off" class="QUESNAT{{forloop.counter}}" name="NAT{{ forloop.counter}}">
+                                                    <!--<input type="text" id="nat-answer{{question.question_no}}"  value="
+                                                        {% for student_ans in question.student_answer_set.all %}
+                                                            {% if student_ans.answer != 'e' and student_ans.student_id == StudentId %}
+                                                                {% spaceless %}
+                                                                    {{student_ans.answer}}
+                                                                {% endspaceless %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                     "onkeypress="return onlyNumberKey{{question.question_no}}(event)" onfocus="removeSpaces{{question.question_no}}(this)" autocomplete="off" class="QUESNAT{{forloop.counter}}" name="NAT{{ forloop.counter}}">-->
+                                                    <div class="nat-plate-options">
+                                                        <input type="button" id="back-space" onclick="backspace{{question.question_no}}()" value="Backspace">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(7)" value="7">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(8)" value="8">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(9)" value="9">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(4)" value="4">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(5)" value="5">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(6)" value="6">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(1)" value="1">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(2)" value="2">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(3)" value="3">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}(0)" value="0">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}('.')" value=".">
+                                                        <input type="button" id="nat-numbers" onclick="insertValue{{question.question_no}}('-')" value="-">
+                                                        <input type="button" id="nat-arrow-1" onclick="moveCursorLeft()" value="&larr;">
+                                                        <input type="button" id="nat-arrow-2" onclick="moveCursorRight()" value="&rarr;">
+                                                        <input type="reset" id="back-space" value="Clear All">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" value="{{question.question_type}}" name="question_type{{question.question_no}}">
+                                    {% else %}
+                                    
+                                        {% for option in question.question_options_set.all %}
+                                            <div class="question-mcq-msq">
+                                                <div class="question-mcq-msq-left">
+                                                    {% if question.question_type == 'MSQ'%}
+                                                        <input type="checkbox"  name="option{{forloop.parentloop.counter}}{{forloop.counter}}" id="form_data" class="content{{forloop.parentloop.counter}}{{forloop.counter}}" value="{{ option.option_name }}"
+                                                        
+                                                        {% if option.option_name == 'A' %} 
+                                                            {% for student_ans in question.student_answer_set.all %}
+                                                                {% if 'A' in student_ans.answer and student_ans.student_id == StudentId %}
+                                                                    checked 
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% elif option.option_name == 'B' %} 
+                                                            {% for student_ans in question.student_answer_set.all %}
+                                                                {% if 'B' in student_ans.answer and student_ans.student_id == StudentId %}
+                                                                    checked 
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% elif option.option_name == 'C' %} 
+                                                            {% for student_ans in question.student_answer_set.all %}
+                                                                {% if 'C' in student_ans.answer and student_ans.student_id == StudentId %}
+                                                                    checked 
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% elif option.option_name == 'D' %} 
+                                                            {% for student_ans in question.student_answer_set.all %}
+                                                                {% if 'D' in student_ans.answer and student_ans.student_id == StudentId %}
+                                                                    checked 
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% else %}
+                                                        {% endif %}>
+
+
+                                                    {% else %}
+                                                        <input type="radio" name="option{{ forloop.parentloop.counter }}" id="form_data" class="content{{forloop.parentloop.counter}}" value="{{ option.option_name }}"
+                                                            {% for student_ans in question.student_answer_set.all %}
+                                                                {% if student_ans.answer == option.option_name and student_ans.student_id == StudentId %}
+                                                                    {{ student_ans.answer }}
+                                                                checked 
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                         >
+                                                    {% endif %}
+                                                    <input type="hidden" value="{{question.question_type}}" name="question_type{{question.question_no}}">
+                                                    <input type="hidden" value="{{question.paper_name}}" name="paper_name{{question.question_no}}">
+                                                </div>
+                                                <div class="question-mcq-msq-right">
+                                                    <img src=" {{ option.option_img.url }}">
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <div class="question-bottom-button">
+                    <div class="question-bottom-button-left">
+                        <input type="button" id="mark-for-review" onclick="goToMarkedForReview()" value="Mark For Review & Next">
+                        <input type="button" id="clear-response" onclick="ClearAnswer()" value="Clear Response">
+                    </div>
+                    <div class="question-bottom-button-right">
+                        <input type="button" id="previous-button" onclick="prevPage()" value="Previous">
+                        <input type="button" id="save-next" onclick="nextPage()" value="Save & Next">
+                    </div>
+                </div>
+                
+            
+
+            </div>
+
+            <div class="content-right">
+                <div class="profile">
+                    <div class="student-pic">
+                        <img src="{% static 'assets/img/student-icon.png' %}">
+                    </div>
+                    <div class="student-name">
+                        <p>{{ StudentName|title }}</p>
+                    </div>
+                </div>
+                <div class="question-content">
+                    <div class="question-content-instruction">
+                        <div class="question-status-instruction">
+                                <button id="instruction-answered-button"> 0 </button>
+                                <p>Answered</p>
+                        </div>
+                        <div class="question-status-instruction">
+                            <button id="instruction-not-answered-button"> 0 </button>
+                            <p>Not Answered</p>
+                        </div>
+                        <div class="question-status-instruction">
+                            <button id="instruction-not-visit-button"> 0 </button>
+                            <p>Not Visit</p>
+                        </div>
+                        <div class="question-status-instruction">
+                            <button id="instruction-marked-for-review-button"> 0 </button>
+                            <p>Marked for Review</p>
+                        </div>
+                        <div class="question-status-instruction">
+                            <button type="button" id="mark_for_review_and_answered_total" class="mark_for_review_and_answered_button"> 0 </button>
+                            <p>Answered & Marked for Review (Will be considered for evaluation)</p>
+                        </div>
+                    </div>
+
+                    <div class="subject-name">
+                        <p><span id="papername"></span></p>
+                    </div>
+
+                    <div class="question-plate">
+                        <p>Choose a Question</p>
+                        <!-- 
+                        <input type="button" id="instruction-not-answered-button-1" value="1">
+                        <input type="button" id="question-no" value="2">
+                        <input type="button" id="instruction-answered-button-1" value="3">
+                        <input type="button" id="question-no" value="4">
+                        <input type="button" id="question-no" value="5">
+                        <input type="button" id="instruction-marked-for-review-button-2" value="6">
+                        -->
+
+                        
+                            <!-- if only one paper -->
+                            {% if no_of_paper == 1 %}
+                                {% for x in StudentAnswer %}
+                                    {% if x.visited == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="question-nos" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}"  onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-not-answered-button-1" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-answered-button-1" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 1 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-marked-for-review-button-2" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 1 %}
+
+                                            <div class="mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="mark-for-review-and-answered-button" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="mark-for-review-and-answered-img" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            <!-- if two paper -->
+                                <div id="Paper_1_Plate">
+                                    {% for x in StudentAnswer %}
+                                        {% if x.question.paper == 1%}
+                                            <!--if two paper then print only first paper questions in question plate -->
+                                            {% if x.visited == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="question-nos" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}"  onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-not-answered-button-1" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-answered-button-1" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 1 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-marked-for-review-button-2" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 1 %}
+
+                                            <div class="mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="mark-for-review-and-answered-button" data-question="{{ forloop.counter }}" value="{{ forloop.counter }}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="mark-for-review-and-answered-img" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <div id="Paper_2_Plate">
+                                    {% for x in StudentAnswer %}
+                                        {% if x.question.paper == 2 %}
+                                            <!--if two paper then print only first paper questions in question plate -->
+                                            {% if x.visited == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="question-nos" data-question="{{ forloop.counter }}" value="{% with difference=forloop.counter|subtract:TotalQuestionInPaper1 %} {{ difference }} {% endwith %}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-not-answered-button-1" data-question="{{ forloop.counter }}" value="{% with difference=forloop.counter|subtract:TotalQuestionInPaper1 %} {{ difference }} {% endwith %}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 0 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-answered-button-1" data-question="{{ forloop.counter }}" value="{% with difference=forloop.counter|subtract:TotalQuestionInPaper1 %}{{difference}} {% endwith %}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 1 %}
+                                            <div class = "mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="instruction-marked-for-review-button-2" data-question="{{ forloop.counter }}" value="{% with difference=forloop.counter|subtract:TotalQuestionInPaper1 %} {{ difference }} {% endwith %}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="" data-question-img = "{{forloop.counter}}"></div>
+                                            </div>
+                                            {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 1 %}
+                                            <div class="mark-for-review-and-answered-container">
+                                                <input type="button" id="ques{{forloop.counter}}" class="mark-for-review-and-answered-button" data-question="{{ forloop.counter }}" value="{% with difference=forloop.counter|subtract:TotalQuestionInPaper1 %} {{ difference }} {% endwith %}" onclick="goToPage({{ forloop.counter }})">
+                                                <div class="mark-for-review-and-answered-img" data-question-img={{forloop.counter}}></div>
+                                            </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                    </div>
+                </div>
+            </form>
+                <div class="final-submit">
+                    <form action="{% url 'test_submit' %}" method="get" id="testForm" onsubmit="return onSubmitForm()">
+                        <input type="hidden" value="{{ TestSlug}}" name="test">
+                        <input type="submit" id="final-submit-button" value="Submit">
+                    </form>
+                </div>
+
+            </div>
+       </div>
+        {% include 'test-mobile-content.html' %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        {% csrf_token %}
+        <script>
+            
+            let visitedUnanswered = [];  // Visited and unanswered questions
+            let visitedAnswered = [];    // Visited and answered questions
+            let unvisited = [];          // unvisited
+            let markforReview = [];      // mark for review
+            let markforReviewAnswered = []; //mark for review and answered
+
+            //only for paper question plate 
+            {% if no_of_paper == 2 %}
+                let visitedUnanswered_Paper1 = 0;
+                let visitedAnswered_Paper1 = 0;
+                let unvisited_Paper1 = 0;  
+                let markforReview_Paper1 = 0;    
+                let markforReviewAnswered_Paper1 = 0;
+            {% endif %}
+            
+            //push value in array 
+            {% for x in StudentAnswer %}
+                {% if x.answer != 'e' %}
+                    {% if x.markforreview == 1 %}
+                        //this question is answered and is in markforReview
+                        markforReviewAnswered.push({{x.question_no}});
+
+                        // if calculate only on no of paper is 2
+                        {% if no_of_paper == 2 and x.question_no <= TotalQuestionInPaper1 %}
+                            markforReviewAnswered_Paper1++;
+                        {% endif %}
+
+                    {% else %}
+                        //this question is not in markforReview and answered
+                        visitedAnswered.push({{x.question_no}});
+
+                        // if calculate only on no of paper is 2
+                        {% if no_of_paper == 2 and x.question_no <= TotalQuestionInPaper1 %}
+                            visitedAnswered_Paper1++;
+                        {% endif %}
+
+
+                    {% endif %}
+                {% else %}
+                    {% if x.visited == 1 %}
+                        {% if x.markforreview == 1%}
+                            //this question is unanswered and is in markforReview
+                            markforReview.push({{x.question_no}});
+
+                            // if calculate only on no of paper is 2
+                            {% if no_of_paper == 2 and x.question_no <= TotalQuestionInPaper1 %}
+                                markforReview_Paper1++;
+                            {% endif %}
+
+                        {% else %}
+                            //this question is not in markforReview and unanswered
+                            visitedUnanswered.push({{x.question_no}});
+
+                            // if calculate only on no of paper is 2
+                            {% if no_of_paper == 2 and x.question_no <= TotalQuestionInPaper1 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {% if x.visited == 0 %}
+                    //not visisted yet
+                    unvisited.push({{x.question_no}});
+
+                    // if calculate only on no of paper is 2
+                    {% if no_of_paper == 2 and x.question_no <= TotalQuestionInPaper1 %}
+                        unvisited_Paper1++;
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+
+            //applyed pagination on question
+            const itemsPerPage = 1; // Number of items per page
+            const prevBtn = document.getElementById('previous-button');
+            const nextBtn = document.getElementById('save-next');
+            const content = document.getElementById('quescontent');
+            
+            {% if Current_Paper == 1 %}
+                let currentPage = {{ CurrentQuestionInPaper1 }};
+                //prevouspage
+                let previousPage = {{ CurrentQuestionInPaper1 }};
+            {% else %}
+                let currentPage = {{ CurrentQuestionInPaper2 }};
+                //prevouspage
+                let previousPage = {{ CurrentQuestionInPaper2 }};
+            {% endif %}
+            const totalItems = content.children.length; // Total number of custom items
+
+            //the following variable indicate recently remove from mark for review
+            let recentRemoveMarkForReview = 0;  //initialize value is 0
+            let currentQuestionInPaper1 = {{ CurrentQuestionInPaper1 }};
+            let currentQuestionInPaper2 = {{ CurrentQuestionInPaper2 }};
+
+            
+            function showPage(page) {
+                prevBtn.disabled = page === 1;
+                /*nextBtn.disabled = page === Math.ceil(totalItems / itemsPerPage);*/
+    
+                // Hide all items and show items for the current page
+                for (let i = 0; i < totalItems; i++) {
+                    content.children[i].style.display = (i >= (currentPage - 1) * itemsPerPage && i < currentPage * itemsPerPage) ? 'block' : 'none';
+                }
+
+                const Paper_1_Plate = document.getElementById("Paper_1_Plate");
+                const Paper_2_Plate = document.getElementById("Paper_2_Plate");
+
+                {% if no_of_paper == 2 %}
+                    if (page <= {{ TotalQuestionInPaper1 }}) {
+                        Paper_1_Plate.style.display = "block";
+                        Paper_2_Plate.style.display = "none";
+                    } else{
+                        Paper_1_Plate.style.display = "none";
+                        Paper_2_Plate.style.display = "block";
+                    }
+                {% endif %}
+                
+                var papername = "paper_name"+currentPage;
+                var papername_Value = $("input[name='" + papername + "']").val();
+
+                var myDiv = document.getElementById('papername');
+                myDiv.innerHTML = papername_Value;
+
+                //window.alert(markforReviewAnswered);
+
+                var count_not_visisted = document.getElementById('instruction-not-visit-button');
+                var count_visited_answered = document.getElementById('instruction-answered-button'); 
+                var count_visited_unanswered = document.getElementById('instruction-not-answered-button');
+                var count_mark_for_review = document.getElementById('instruction-marked-for-review-button');
+                var count_mark_for_review_answered = document.getElementById('mark_for_review_and_answered_total');
+                
+
+                //question plate instruction button value 
+                {% if no_of_paper == 1 %}
+                    count_not_visisted.innerHTML = unvisited.length;
+                    count_visited_answered.innerHTML = visitedAnswered.length;
+                    count_visited_unanswered.innerHTML = visitedUnanswered.length;
+                    count_mark_for_review.innerHTML = markforReview.length;
+                    count_mark_for_review_answered.innerHTML = markforReviewAnswered.length;
+                {% endif %}
+
+                {% if no_of_paper == 2 %}
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        count_not_visisted.innerHTML =  unvisited_Paper1;
+                        count_visited_answered.innerHTML = visitedAnswered_Paper1;
+                        count_visited_unanswered.innerHTML = visitedUnanswered_Paper1;
+                        count_mark_for_review.innerHTML = markforReview_Paper1;
+                        count_mark_for_review_answered.innerHTML = markforReviewAnswered_Paper1;
+                    }else{
+                        count_not_visisted.innerHTML = unvisited.length - unvisited_Paper1;
+                        count_visited_answered.innerHTML = visitedAnswered.length - visitedAnswered_Paper1;
+                        count_visited_unanswered.innerHTML = visitedUnanswered.length - visitedUnanswered_Paper1;
+                        count_mark_for_review.innerHTML = markforReview.length - markforReview_Paper1;
+                        count_mark_for_review_answered.innerHTML = markforReviewAnswered.length - markforReviewAnswered_Paper1;
+                    }
+                {% endif %}
+
+            }
+    
+            function prevPage() {
+
+                if(!visitedAnswered.includes(currentPage)){//reset if not in visitedAnswered and not in markforReviewAnswered
+                    if(!markforReviewAnswered.includes(currentPage)){
+                        resetRadio(currentPage);
+                    } 
+                }
+
+                var countques = {{ TotalQuestionInPaper1 }}+1;
+                var current_Ques;
+                if (currentPage > countques) {
+                    current_Ques = currentPage - 1;
+                }
+
+                if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                    current_Ques = currentPage - 1;
+                }
+
+                //if next page is in unvisited then remove from unvisited and push into visitedUnAnswered otherwise no action 
+                if(unvisited.includes(current_Ques)){
+                    //remove from unvisited
+                    unvisited = unvisited.filter(item => item !== current_Ques);
+
+                    // if calculate only on no of paper is 2
+                    if (current_Ques <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+                    //push into visitedUnAnswered
+                    if(!visitedUnanswered.includes(current_Ques)){
+                        visitedUnanswered.push(current_Ques);
+
+                        // if calculate only on no of paper is 2
+                        if (current_Ques <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+
+                    }
+                }
+                
+
+                var countques = {{ TotalQuestionInPaper1 }}+1;
+
+                if (currentPage > countques) {
+                    previousPage = currentPage;
+                    currentPage--;
+                    showPage(currentPage);
+                }
+
+                if(currentPage === countques){
+                    prevBtn.disabled = true;
+                }
+
+                if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                    previousPage = currentPage;
+                    currentPage--;
+                    showPage(currentPage);
+                }
+
+                
+                PreviousQuesSave();
+                
+            }
+    
+            function nextPage(){
+
+                previousPage = currentPage;
+
+                AnswerSubmit();
+
+                //check answered or not 
+                var ques_answer = CheckAnswered(); // CheckAnswered() return either true or false (if answered then return true otherwise return false)
+
+                //check the currentPage(currentQuestion) in which array
+                // check in unvisited
+                if(unvisited.includes(currentPage)){
+                    // Remove from unvisited
+                    unvisited = unvisited.filter(item => item !== currentPage);
+
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+                    //if answer is given then push into visitedAnswered other otherwise push into visitedUnanswered
+                    if(ques_answer){
+                        //if answer is given
+                        if(!visitedAnswered.includes(currentPage)){
+                            //if currentPage not in visitedAnswered then push into visitedAnswered
+                            visitedAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    visitedAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                        else{
+                            //if answer is not given then push into visitedUnanswered
+                            if(!visitedUnanswered.includes(currentPage)){
+                                visitedUnanswered.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        visitedUnanswered_Paper1++;
+                                    {% endif %}
+                                }
+                            }
+                        }
+                }
+
+                //check in markforreview
+                if(markforReview.includes(currentPage)){
+                    // Remove from markforReview
+                    markforReview = markforReview.filter(item => item !== currentPage);
+
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            markforReview_Paper1--;
+                        {% endif %}
+                    }
+                    //if answer is given then push into visitedAnswered other otherwise push into visitedUnanswered
+                    if(ques_answer){
+                        //if answer is given
+                        if(!visitedAnswered.includes(currentPage)){
+                            //if currentPage not in visitedAnswered then push into visitedAnswered
+                            visitedAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    visitedAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                        else{
+                            //if answer is not given then push into visitedUnanswered
+                            if(!visitedUnanswered.includes(currentPage)){
+                                visitedUnanswered.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        visitedUnanswered_Paper1++;
+                                    {% endif %}
+                                }
+                            }
+                        }
+                }
+
+                //check in markforReviewAnswered
+                if(markforReviewAnswered.includes(currentPage)){
+                     // Remove from markforReview
+                     markforReviewAnswered = markforReviewAnswered.filter(item => item !== currentPage);
+
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            markforReviewAnswered_Paper1--;
+                        {% endif %}
+                    }
+
+                     //if answer is given then push into visitedAnswered other otherwise push into visitedUnanswered
+                     if(ques_answer){
+                         //if answer is given
+                         if(!visitedAnswered.includes(currentPage)){
+                             //if currentPage not in visitedAnswered then push into visitedAnswered
+                             visitedAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    visitedAnswered_Paper1++;
+                                {% endif %}
+                            }
+                         }
+                     }
+                         else{
+                             //if answer is not given then push into visitedUnanswered
+                             if(!visitedUnanswered.includes(currentPage)){
+                                 visitedUnanswered.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        visitedUnanswered_Paper1++;
+                                    {% endif %}
+                                }
+                             }
+                         }
+                }
+
+                //check in visitedAnswered
+                if(visitedAnswered.includes(currentPage)){
+                    /*already answerd give but now check answered or unanswered if answered then no change or unanswered then remove from
+                    visitedAnswered and push into the visitedUnanswered */
+                    if(!ques_answer){
+                        //if unanswered 
+                        //remove from visitedAnswered
+                        visitedAnswered = visitedAnswered.filter(item => item !== currentPage);
+
+                        // if calculate only on no of paper is 2
+                        if (currentPage <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedAnswered_Paper1--;
+                            {% endif %}
+                        }
+
+
+                        //push into visitedUnanswered
+                        if(!visitedUnanswered.includes(currentPage)){
+                            visitedUnanswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    visitedUnanswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                }
+
+                // check in visitedUnanswered
+                if(visitedUnanswered.includes(currentPage)){
+                    /*already unanswerd but now check answered or unanswered if unanswered then no change or answered then remove from
+                    visitedUnAnswered and push into the visitedanswered */
+                    if(ques_answer){
+                        //if answered 
+                        //remove from visitedUnanswered
+                        visitedUnanswered = visitedUnanswered.filter(item => item !== currentPage);
+
+                        // if calculate only on no of paper is 2
+                        if (currentPage <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1--;
+                            {% endif %}
+                        }
+
+                        //push into visitedAnswered
+                        if(!visitedAnswered.includes(currentPage)){
+                            visitedAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    visitedAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                }
+
+
+                //set currentquestion in paper1 and Paper_2_Plate
+                {% if no_of_paper == 1 %}
+                    if(currentPage == totalItems){
+                        currentQuestionInPaper1 = 1;
+                    }
+                        else{
+                            currentQuestionInPaper1 = currentPage + 1;
+                        }
+                {% else %}
+                    // check current question is paper 1 or paper 2
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        //if current paper is 1
+                        if(currentPage == totalItems){
+                            currentQuestionInPaper1 = {{ TotalQuestionInPaper1 }};
+                            currentQuestionInPaper2 = {{ TotalQuestionInPaper1 }};
+                            currentQuestionInPaper2++;
+                        }
+                            else{
+                                if(currentQuestionInPaper1 < {{ TotalQuestionInPaper1}}){
+                                    currentQuestionInPaper1 = currentPage + 1;
+                                }
+                            }
+                    }
+                        
+                    else{
+                        //current paper is 2
+                        if(currentPage > {{ TotalQuestionInPaper1 }}){
+                            if(currentPage == totalItems){
+                                currentQuestionInPaper2 = {{ TotalQuestionInPaper1 }};
+                                currentQuestionInPaper2++;
+                            }
+                                else{
+                                    currentQuestionInPaper2 = currentPage + 1;
+                                }
+                        }
+                    }
+                        
+                {% endif %}
+
+                var current_Ques;
+                if(currentPage == totalItems){
+                    {% if no_of_paper == 1 %}
+                        current_Ques = 1;
+                    {% else %}
+                        current_Ques = {{ TotalQuestionInPaper1 }};
+                    {% endif %}
+                }
+
+                if(currentPage < Math.ceil(totalItems / itemsPerPage)) {
+                    current_Ques = currentPage + 1;
+                }
+
+                //if next page is in unvisited then remove from unvisited and push into visitedUnAnswered otherwise no action 
+                if(unvisited.includes(current_Ques)){
+                    //remove from unvisited
+                    unvisited = unvisited.filter(item => item !== current_Ques);
+
+                    // if calculate only on no of paper is 2
+                    if (current_Ques <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+                    //push into visitedUnAnswered
+                    if(!visitedUnanswered.includes(current_Ques)){
+                        visitedUnanswered.push(current_Ques);
+
+                        // if calculate only on no of paper is 2
+                        if (current_Ques <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+                    }
+                }
+
+
+                if(currentPage == totalItems){
+                    {% if no_of_paper == 1 %}
+                        currentPage = 1;
+                        showPage(currentPage);
+                    {% else %}
+                        currentPage = {{ TotalQuestionInPaper1 }} + 1;
+                        showPage(currentPage);
+                    {% endif %}
+                }
+
+                else if (currentPage < Math.ceil(totalItems / itemsPerPage)) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+                
+                
+            }
+
+            // if click on marked for review
+            function goToMarkedForReview() {
+                previousPage = currentPage;
+                MarkedForReview();
+
+                var ques_answer = CheckAnswered();// CheckAnswered() return true if answered otherwise return false 
+
+                //check the currentPage is in which array 
+
+                // check in unvisited 
+                if(unvisited.includes(currentPage)){
+                    // Remove from unvisited
+                    unvisited = unvisited.filter(item => item !== currentPage);
+
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+                    //if answer is given then push into markforReviewAnswered other otherwise push into markforReview
+                    if(ques_answer){
+                        //if answer is given
+                        if(!markforReviewAnswered.includes(currentPage)){
+                            //if currentPage not in markforReviewAnswered then push into markforReviewAnswered
+                            markforReviewAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    markforReviewAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                        else{
+                            //if answer is not given then push into markforReview
+                            if(!markforReview.includes(currentPage)){
+                                markforReview.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        markforReview_Paper1++;
+                                    {% endif %}
+                                }
+                            }
+                        }
+                }
+
+                // check in visitedAnswered
+                if(visitedAnswered.includes(currentPage)){
+                    // Remove from visitedAnswered
+                    visitedAnswered = visitedAnswered.filter(item => item !== currentPage);
+
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            visitedAnswered_Paper1--;
+                        {% endif %}
+                    }
+
+                    //if answer is given then push into markforReviewAnswered other otherwise push into markforReview
+                    if(ques_answer){
+                        //if answer is given
+                        if(!markforReviewAnswered.includes(currentPage)){
+                            //if currentPage not in markforReviewAnswered then push into markforReviewAnswered
+                            markforReviewAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    markforReviewAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                        else{
+                            //if answer is not given then push into markforReview
+                            if(!markforReview.includes(currentPage)){
+                                markforReview.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        markforReview_Paper1++;
+                                    {% endif %}
+                                }
+                            }
+                        }
+                }
+
+                //checck in visitedUnAnswered
+                if(visitedUnanswered.includes(currentPage)){
+                    // Remove from visitedUnanswered
+                    visitedUnanswered = visitedUnanswered.filter(item => item !== currentPage);
+                    
+                    // if calculate only on no of paper is 2
+                    if (currentPage <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            visitedUnanswered_Paper1--;
+                        {% endif %}
+                    }
+
+                    //if answer is given then push into markforReviewAnswered other otherwise push into markforReview
+                    if(ques_answer){
+                        //if answer is given
+                        if(!markforReviewAnswered.includes(currentPage)){
+                            //if currentPage not in markforReviewAnswered then push into markforReviewAnswered
+                            markforReviewAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    markforReviewAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                        else{
+                            //if answer is not given then push into markforReview
+                            if(!markforReview.includes(currentPage)){
+                                markforReview.push(currentPage);
+
+                                // if calculate only on no of paper is 2
+                                if (currentPage <= {{TotalQuestionInPaper1}}){
+                                    {% if no_of_paper == 2 %}
+                                        markforReview_Paper1++;
+                                    {% endif %}
+                                }
+                            }
+                        }
+                }
+
+                // check in markforreview
+                if(markforReview.includes(currentPage)){
+                    //if answer is given then push into markforReviewAnswered and remove from markforReview
+                    if(ques_answer){
+                        //remove from markforreview
+                        markforReview = markforReview.filter(item => item !== currentPage);
+
+                        // if calculate only on no of paper is 2
+                        if (currentPage <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                markforReview_Paper1--;
+                            {% endif %}
+                        }
+
+                        //if answer is given then push into markforReviewAnswered
+                        if(!markforReviewAnswered.includes(currentPage)){
+                            markforReviewAnswered.push(currentPage);
+
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    markforReviewAnswered_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                }
+
+                //check in markforReviewAnswered
+                if(markforReviewAnswered.includes(currentPage)){
+                    //if answer is given then push into markforReviewAnswered and remove from markforReview
+                    if(!ques_answer){
+                        //remove from markforReviewAnswered
+                        markforReviewAnswered = markforReviewAnswered.filter(item => item !== currentPage);
+
+                        // if calculate only on no of paper is 2
+                        if (currentPage <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                markforReviewAnswered_Paper1--;
+                            {% endif %}
+                        }
+
+                        //if answer is given then push into markforReview
+                        if(!markforReview.includes(currentPage)){
+                            markforReview.push(currentPage);
+                            
+                            // if calculate only on no of paper is 2
+                            if (currentPage <= {{TotalQuestionInPaper1}}){
+                                {% if no_of_paper == 2 %}
+                                    markforReview_Paper1++;
+                                {% endif %}
+                            }
+                        }
+                    }
+                }
+
+                
+
+                //set currentquestion in paper1 and Paper_2_Plate
+                {% if no_of_paper == 1 %}
+                    if(currentPage == totalItems){
+                        currentQuestionInPaper1 = 1;
+                    }
+                        else{
+                            currentQuestionInPaper1 = currentPage + 1;
+                        }
+                {% else %}
+                    // check current question is paper 1 or paper 2
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        //if current paper is 1
+                        if(currentPage == totalItems){
+                            currentQuestionInPaper1 = {{ TotalQuestionInPaper1 }};
+                            currentQuestionInPaper2 = {{ TotalQuestionInPaper1 }};
+                            currentQuestionInPaper2++;
+                        }
+                            else{
+                                if(currentQuestionInPaper1 < {{ TotalQuestionInPaper1}}){
+                                    currentQuestionInPaper1 = currentPage + 1;
+                                }
+                            }
+                    }
+                        
+                    else{
+                        //current paper is 2
+                        if(currentPage > {{ TotalQuestionInPaper1 }}){
+                            if(currentPage == totalItems){
+                                currentQuestionInPaper2 = {{ TotalQuestionInPaper1 }};
+                                currentQuestionInPaper2++;
+                            }
+                                else{
+                                    currentQuestionInPaper2 = currentPage + 1;
+                                }
+                        }
+                    }
+                        
+                {% endif %}
+
+                // current question
+                var current_Ques;
+                if(currentPage == totalItems){
+                    {% if no_of_paper == 1 %}
+                        current_Ques = 1;
+                    {% else %}
+                        current_Ques = {{ TotalQuestionInPaper1 }};
+                    {% endif %}
+                }
+
+                if(currentPage < Math.ceil(totalItems / itemsPerPage)) {
+                    current_Ques = currentPage + 1;
+                }
+
+                //if next page is in unvisited then remove from unvisited and push into visitedUnAnswered otherwise no action 
+                if(unvisited.includes(current_Ques)){
+                    //remove from unvisited
+                    unvisited = unvisited.filter(item => item !== current_Ques);
+
+                    // if calculate only on no of paper is 2
+                    if (current_Ques <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+
+                    //push into visitedUnAnswered
+                    if(!visitedUnanswered.includes(current_Ques)){
+                        visitedUnanswered.push(current_Ques);
+
+                        // if calculate only on no of paper is 2
+                        if (current_Ques <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+                    }
+                }
+
+                if(currentPage == totalItems){
+                    {% if no_of_paper == 1 %}
+                        currentPage = 1;
+                        showPage(currentPage);
+                    {% else %}
+                        currentPage = {{ TotalQuestionInPaper1 }} + 1;
+                        showPage(currentPage);
+                    {% endif %}
+                }
+
+                else if (currentPage < Math.ceil(totalItems / itemsPerPage)) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+
+                
+            }
+    
+            function goToPage(page) {
+
+                previousPage = currentPage;
+
+                // current question answerd not save then reset answer
+                if(!visitedAnswered.includes(currentPage)){
+                    if(!markforReviewAnswered.includes(currentPage)){
+                        resetRadio(currentPage);
+                    }
+                }
+
+
+                //if next page is in unvisited then remove from unvisited and push into visitedUnAnswered otherwise no action 
+                if(unvisited.includes(page)){
+                    //remove from unvisited
+                    unvisited = unvisited.filter(item => item !== page);
+
+                    // if calculate only on no of paper is 2
+                    if (page <= {{TotalQuestionInPaper1}}){
+                        {% if no_of_paper == 2 %}
+                            unvisited_Paper1--;
+                        {% endif %}
+                    }
+
+
+                    //push into visitedUnAnswered
+                    if(!visitedUnanswered.includes(page)){
+                        visitedUnanswered.push(page);
+
+                        // if calculate only on no of paper is 2
+                        if (page <= {{TotalQuestionInPaper1}}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+                    }
+                }
+
+                //set current question in paper1 or Paper 2
+                if(page <= {{ TotalQuestionInPaper1}}){
+                    currentQuestionInPaper1 = page;
+                }
+                    else{
+                        currentQuestionInPaper2 = page;
+                    }
+                
+                currentPage = page;
+                showPage(currentPage);
+
+                goToQuestion(currentPage);
+            }
+
+            function goToPaper(paper){
+                //window.alert("currentQuestionInPaper1 = "+currentQuestionInPaper11);
+                //window.alert("currentQuestionInPaper2 = "+currentQuestionInPaper21);
+                if(paper == 1){
+                    currentPage = currentQuestionInPaper1;
+                    showPage(currentPage);
+                    SavePaper(1);
+                }
+                
+                if(paper == 2){
+                    currentPage = currentQuestionInPaper2;
+                    showPage(currentPage);
+                    SavePaper(2);
+                }
+            }
+            
+            // call showPage function
+            showPage(currentPage);
+
+            //check current question is answered or unanswered
+            function CheckAnswered(){
+                var QuestionType = "question_type"+currentPage;
+                var QuestionType_Value = $("input[name='" + QuestionType + "']").val();
+
+
+                //question type MCQ then check answered or unanswered if answered then return true otherwise return false 
+                if(QuestionType_Value == 'MCQ'){
+                    var mcq_option = "option"+currentPage;
+                    var MCQ_Value = $("input[name='" + mcq_option + "']:checked").val();
+
+                    if (typeof MCQ_Value !== 'undefined'){
+                        return true;
+                    }
+                        else{
+                            return false;
+                        }
+                }
+
+                //question type MSQ then check answered or unanswered if answered then return true otherwise return false
+                if(QuestionType_Value === 'MSQ'){
+                    var option1 = "option"+currentPage+'1';
+                    var option2 = "option"+currentPage+'2';
+                    var option3 = "option"+currentPage+'3';
+                    var option4 = "option"+currentPage+'4';
+
+                    var option1_Value = $("input[name='" + option1 + "']:checked").val();
+                    var option2_Value = $("input[name='" + option2 + "']:checked").val();
+                    var option3_Value = $("input[name='" + option3 + "']:checked").val();
+                    var option4_Value = $("input[name='" + option4 + "']:checked").val();
+                    
+                    if (typeof option1_Value !== 'undefined' || typeof option2_Value !== 'undefined' || typeof option3_Value !== 'undefined' || typeof option4_Value !== 'undefined'){
+                        return true;
+                    }
+                        else{
+                            return false;
+                        }
+
+                }
+
+                //question type NAT then check answered or unanswered if answered then return true otherwise return false
+                if(QuestionType_Value === 'NAT'){
+                    var Nat = "NAT"+currentPage;
+                    var Nat_Value = $("input[name='" + Nat + "']").val();
+                    Nat_Value = Nat_Value.replace(/\s/g, '');
+                    
+                    if(Nat_Value === ''){
+                        return false;
+                    }
+                        else{
+                            return true;
+                        }
+                    
+                }
+
+                
+
+
+            }
+
+
+            // count down java script code start here
+            let timerInterval; // to store the interval reference
+            let startTime = Date.now();
+            let durationInSeconds = {{TestRemaningTime}}; // 1 hour
+            let elapsedTimeInSeconds = 0;
+    
+            function startCountdown() {
+                // Update the timer on the frontend every second
+                timerInterval = setInterval(updateTimer, 1000);
+    
+                function updateTimer() {
+                    let currentTime = Date.now();
+                    let elapsedTime = currentTime - startTime;
+                    elapsedTimeInSeconds = Math.floor(elapsedTime / 1000);
+    
+                    if (elapsedTimeInSeconds >= durationInSeconds) {
+                        clearInterval(timerInterval);
+                        saveElapsedTimeToDatabase(elapsedTimeInSeconds);
+                        window.location.href = 'test-submit/?test={{TestSlug}}';
+                    } else {
+                        let remainingTimeInSeconds = durationInSeconds - elapsedTimeInSeconds;
+                        let hours = Math.floor(remainingTimeInSeconds / 3600);
+                        let minutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
+                        let seconds = remainingTimeInSeconds % 60;
+    
+                        // Display the time in HH:MM:SS format
+                        {% for x in Questions %}
+                            document.getElementById('timer-{{forloop.counter}}').textContent = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+                        {% endfor %}
+
+                        //display the time in HH:MM:SS format in mobile 
+                        document.getElementById('tab_countdown').textContent = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+                        // Save the elapsed time to the database every 5 seconds
+                        if (elapsedTimeInSeconds % 2 === 0) {
+                            saveElapsedTimeToDatabase(elapsedTimeInSeconds);
+                        }
+                    }
+                }
+            }
+    
+            function saveElapsedTimeToDatabase(elapsedTimeInSeconds) {
+                // Get the CSRF token from the cookie
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/save-elapsed-time/',
+                    data: {
+                        'TestId': {{ TestId }},
+                        'CurrentQuestion' : currentPage,
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+
+
+            }
+
+    
+            // Function to get CSRF token from the cookie
+            function getCookie(name) {
+                const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+                return cookieValue ? cookieValue[2] : null;
+            }
+    
+            // Start the countdown timer
+            startCountdown();
+
+
+
+            /* code start for save and next */
+            function AnswerSubmit() {
+                var Nat = "NAT"+currentPage;
+                var Nat_Value = $("input[name='" + Nat + "']").val();
+
+                var option1 = "option"+currentPage+'1';
+                var option2 = "option"+currentPage+'2';
+                var option3 = "option"+currentPage+'3';
+                var option4 = "option"+currentPage+'4';
+
+
+                var option1_Value = $("input[name='" + option1 + "']:checked").val();
+                var option2_Value = $("input[name='" + option2 + "']:checked").val();
+                var option3_Value = $("input[name='" + option3 + "']:checked").val();
+                var option4_Value = $("input[name='" + option4 + "']:checked").val();
+
+                var mcq_option = "option"+currentPage;
+                var MCQ_Value = $("input[name='" + mcq_option + "']:checked").val();
+                // Send the data to the Django view using AJAX
+                
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/save-answer/',
+                    data: {
+                        'Nat': Nat_Value,
+                        'option1' : option1_Value,
+                        'option2' : option2_Value,
+                        'option3' : option3_Value,
+                        'option4' : option4_Value,
+                        'form_data' : MCQ_Value,
+                        'QuestionNo' : currentPage,
+                        'TestId' : {{ TestId }},
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/save-next/");
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+            }
+
+            //code for goToQuestion
+            var question_no;
+            function goToQuestion(question_no) {
+                // Send the data to the Django view using AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/question-change/',
+                    data: {
+                        'QuestionNo': question_no,
+                        'TestId' : {{ TestId }},
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/question-reload/");
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+            }
+
+            //code for marked for review 
+            function MarkedForReview() {
+                var Nat = "NAT"+currentPage;
+                var Nat_Value = $("input[name='" + Nat + "']").val();
+
+                var option1 = "option"+currentPage+'1';
+                var option2 = "option"+currentPage+'2';
+                var option3 = "option"+currentPage+'3';
+                var option4 = "option"+currentPage+'4';
+
+
+                var option1_Value = $("input[name='" + option1 + "']:checked").val();
+                var option2_Value = $("input[name='" + option2 + "']:checked").val();
+                var option3_Value = $("input[name='" + option3 + "']:checked").val();
+                var option4_Value = $("input[name='" + option4 + "']:checked").val();
+
+                var mcq_option = "option"+currentPage;
+                var MCQ_Value = $("input[name='" + mcq_option + "']:checked").val();
+                // Send the data to the Django view using AJAX
+                
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/mark-for-review/',
+                    data: {
+                        'Nat': Nat_Value,
+                        'option1' : option1_Value,
+                        'option2' : option2_Value,
+                        'option3' : option3_Value,
+                        'option4' : option4_Value,
+                        'form_data' : MCQ_Value,
+                        'QuestionNo' : currentPage,
+                        'TestId' : {{ TestId }},
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/save-next/");
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+            }
+
+
+            //if answer is clear
+            function ClearAnswer() {
+                resetRadio(currentPage);
+
+                // if the current question is already exists in visitedAnswered then remove from visitedAnswered
+                if(visitedAnswered.includes(currentPage)){
+                    visitedAnswered = visitedAnswered.filter(item => item !== currentPage);
+
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        {% if no_of_paper == 2 %}
+                                visitedAnswered_Paper1--;
+                        {% endif %}
+                    }
+
+                    //push into visitedUnanswered
+                    if(!visitedUnanswered.includes(currentPage)){
+                        visitedUnanswered.push(currentPage);
+
+                        if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+
+                    }
+                }
+
+                //if the current question is already exists in markfor review then remove from markforReview
+                if(markforReview.includes(currentPage)){
+                    markforReview = markforReview.filter(item => item !== currentPage);
+
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        {% if no_of_paper == 2 %}
+                                markforReview_Paper1--;
+                        {% endif %}
+                    }
+
+
+                    //push into visitedUnanswered
+                    if(!visitedUnanswered.includes(currentPage)){
+                        visitedUnanswered.push(currentPage);
+
+                        if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+                    }
+
+                }
+
+                //if the current question is already exists in markforReviewAnswered then remove from markforReviewAnswered
+                if(markforReviewAnswered.includes(currentPage)){
+                    markforReviewAnswered = markforReviewAnswered.filter(item => item !== currentPage);
+
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        {% if no_of_paper == 2 %}
+                                markforReviewAnswered_Paper1--;
+                        {% endif %}
+                    }
+
+                    //push into visitedUnanswered
+                    if(!visitedUnanswered.includes(currentPage)){
+                        visitedUnanswered.push(currentPage);
+
+                        if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                            {% if no_of_paper == 2 %}
+                                visitedUnanswered_Paper1++;
+                            {% endif %}
+                        }
+                    }
+                }
+
+                //push into unanswered
+                if(!visitedUnanswered.includes(currentPage)){
+                    visitedUnanswered.push(currentPage);
+
+                    if(currentPage <= {{ TotalQuestionInPaper1 }}){
+                        {% if no_of_paper == 2 %}
+                            visitedUnanswered_Paper1++;
+                        {% endif %}
+                    }
+                }
+                
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/clear-answer/',
+                    data: {
+                        'QuestionNo' : currentPage,
+                        'TestId' : {{ TestId }},
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/save-next/");
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+
+                showPage(currentPage);
+            }
+
+
+            /* code start for save and next */
+            var paper;
+            function SavePaper(paper) {
+            
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/paper-change/',
+                    data: {
+                        'Paper': paper,
+                        'TestId' : {{ TestId }},
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/save-next/");
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+            }
+
+
+            function PreviousQuesSave(){
+            
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/previous-question/',
+                    data: {
+                        'Paper': paper,
+                        'TestId' : {{ TestId }},
+                        'QuestionNo' : currentPage,
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        //$(".content,.tab-content").load("/api/save-next/");
+                        // Set the scroll position back to the stored value
+                    },
+                    error: function() {
+                        alert('An error occurred while submitting the form.');
+                    }
+                });
+            }
+
+            var currentQues;
+            function resetRadio(currentQues) {
+                var ques_type = "question_type"+currentQues;
+
+                var ques_type_Value = $("input[name='" + ques_type + "']").val();
+
+
+                //if currentquestion is mcq 
+                if(ques_type_Value === 'MCQ'){
+                    var content = ".content"+currentQues;
+                    var resettableRadios = document.querySelectorAll(content);
+                    // Loop through resettable radio buttons
+                    for (var i = 0; i < resettableRadios.length; i++) {
+                        if (resettableRadios[i].checked) {
+                            resettableRadios[i].checked = false; // Uncheck the selected radio button
+                            break; // Stop the loop after the first one is found
+                        }
+                    }
+                }
+                
+                if(ques_type_Value === 'MSQ'){//if question is msq
+                    var option1 = ".content"+currentQues+'1';
+                    var option2 = ".content"+currentQues+'2';
+                    var option3 = ".content"+currentQues+'3';
+                    var option4 = ".content"+currentQues+'4';
+
+                    var resettableCheck1 = document.querySelectorAll(option1);
+                    var resettableCheck2 = document.querySelectorAll(option2);
+                    var resettableCheck3 = document.querySelectorAll(option3);
+                    var resettableCheck4 = document.querySelectorAll(option4);
+
+                    if (resettableCheck1[0].checked) {
+                        resettableCheck1[0].checked = false; // Uncheck the selected radio button
+                    }
+
+                    if (resettableCheck2[0].checked) {
+                        resettableCheck2[0].checked = false; // Uncheck the selected radio button
+                    }
+
+                    if (resettableCheck3[0].checked) {
+                        resettableCheck3[0].checked = false; // Uncheck the selected radio button
+                    }
+
+                    if (resettableCheck4[0].checked) {
+                        resettableCheck4[0].checked = false; // Uncheck the selected radio button
+                    }
+
+                }
+                
+                if(ques_type_Value === 'NAT'){
+                        var natid = 'nat-answer'+currentQues;
+                        var inputElement = document.getElementById(natid);
+                        inputElement.value = '';
+                    }  
+              }
+
+
+
+            // Helper function to get the CSRF token from cookies
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Check if the cookie name matches the CSRF cookie name
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+
+            //if save and next then question style change
+            document.addEventListener('DOMContentLoaded', function() {
+                //const buttons = document.querySelectorAll('.question-button');
+                const saveAndNextButton = document.getElementById('save-next'); // Replace with the actual ID of your button 
+                const markForReview = document.getElementById('mark-for-review'); 
+                const clearResponse = document.getElementById('clear-response');
+                const previousvisit = document.getElementById('previous-button');
+
+                // following variables are used only for mobile
+                const tab_saveAndNextButton = document.getElementById('tab-save-next'); // Replace with the actual ID of your button 
+                const tab_markForReview = document.getElementById('tab-mark-for-review'); 
+                const tab_clearResponse = document.getElementById('tab-clear-response');
+                //const previousvisit = document.getElementById('previous-button');
+                
+                {% for x in Questions %}
+                        const quesid{{x.question_no}} = "ques"+{{x.question_no}};
+                        const questionPlate{{x.question_no}} = document.getElementById(quesid{{x.question_no}});
+
+                        // add for mobile 
+                        const tab_quesid{{x.question_no}} = "tab_ques"+{{x.question_no}};
+                        const tab_questionPlate{{x.question_no}} = document.getElementById(tab_quesid{{x.question_no}});
+                        
+                {% endfor %}
+            
+                //if click on save and next button
+                saveAndNextButton.addEventListener('click', function() {
+                    const currentQuestion = currentPage; // Replace with the current question number
+                    const currentQuestionButton = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    const previousQuestion = previousPage;
+                    const previousQuestionButton = document.querySelector(`[data-question="${previousQuestion}"]`);
+                    //markfor review answered question img div id 
+                    const CurretMarkForReview =  document.querySelector(`[data-question-img="${previousQuestion}"]`);
+
+                    //window.alert("previousQuestion ="+previousQuestion);
+                    //window.alert("currentQuestion = "+currentQuestion);
+
+                    //window.alert(unvisited);
+                    //window.alert("visitedUnanswered = "+visitedUnanswered);
+                    //current page
+                    if(visitedUnanswered.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    if(unvisited.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+                    
+                    //previous page
+                    // if previous question in markforReview
+                    if(markforReview.includes(previousPage)){
+                        // add markforReview class and other class remove
+                        previousQuestionButton.classList.remove('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.add('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.remove('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+                    //if previous question in markforReviewAnswered
+                    if(markforReviewAnswered.includes(previousPage)){
+                        // add markforReviewAnswered class and other class remove
+                        previousQuestionButton.classList.remove('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.remove('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.add('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.add('mark-for-review-and-answered-img');
+                    }
+
+                    //if previus question in visitedAnswered
+                    if(visitedAnswered.includes(previousPage)){
+                        // add visitedAnswered class and other class remove
+                        previousQuestionButton.classList.remove('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.add('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    //previous question in visitedUnAnswered
+                    if(visitedUnanswered.includes(previousPage)){
+                        // add visitedUnAnswered class and other class remove
+                        previousQuestionButton.classList.add('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.remove('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+
+                    event.preventDefault();
+                });
+
+                //only for mobile 
+                //if click on save and next button
+                tab_saveAndNextButton.addEventListener('click', function() {
+                    const tab_currentQuestion = tab_currentPage; // Replace with the current question number
+                    const tab_currentQuestionButton = document.querySelector(`[tab_data-question="${tab_currentQuestion}"]`);
+                    const tab_previousQuestion = tab_previousPage;
+                    const tab_previousQuestionButton = document.querySelector(`[tab_data-question="${tab_previousQuestion}"]`);
+                    //markfor review answered question img div id 
+                    const tab_CurretMarkForReview =  document.querySelector(`[tab_data-question-img="${tab_previousQuestion}"]`);
+
+                    //window.alert("previousQuestion ="+previousQuestion);
+                    //window.alert("currentQuestion = "+currentQuestion);
+
+                    //window.alert(unvisited);
+                    //window.alert("visitedUnanswered = "+visitedUnanswered);
+                    //current page
+                    if(tab_visitedUnanswered.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+                    if(tab_unvisited.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+                    
+                    //previous page
+                    // if previous question in markforReview
+                    if(tab_markforReview.includes(tab_previousPage)){
+                        // add markforReview class and other class remove
+                        tab_previousQuestionButton.classList.remove('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.add('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+                    //if previous question in markforReviewAnswered
+                    if(tab_markforReviewAnswered.includes(tab_previousPage)){
+                        // add markforReviewAnswered class and other class remove
+                        tab_previousQuestionButton.classList.remove('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.add('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.add('tab_mark-for-review-and-answered-img');
+                    }
+
+                    //if previus question in visitedAnswered
+                    if(tab_visitedAnswered.includes(tab_previousPage)){
+                        // add visitedAnswered class and other class remove
+                        tab_previousQuestionButton.classList.remove('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.add('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+                    //previous question in visitedUnAnswered
+                    if(tab_visitedUnanswered.includes(tab_previousPage)){
+                        // add visitedUnAnswered class and other class remove
+                        tab_previousQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+
+                    event.preventDefault();
+                });
+
+                //if click on mark for review button
+                markForReview.addEventListener('click', function() {
+                    const currentQuestion = currentPage; // Replace with the current question number
+                    const currentQuestionButton = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    const previousQuestion = previousPage;
+                    const previousQuestionButton = document.querySelector(`[data-question="${previousQuestion}"]`);
+
+                    //markfor review answered question img div id 
+                    const CurretMarkForReview =  document.querySelector(`[data-question-img="${previousQuestion}"]`);
+                    
+                    //current page
+                    if(visitedUnanswered.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    if(unvisited.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+
+                    if(markforReview.includes(previousQuestion)){
+                        // add markforReview class and other class remove
+                        previousQuestionButton.classList.remove('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.add('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.remove('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+                    //if previous question in markforReviewAnswered
+                    if(markforReviewAnswered.includes(previousQuestion)){
+                        // add markforReviewAnswered class and other class remove
+                        previousQuestionButton.classList.remove('instruction-not-answered-button-1');
+                        previousQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        previousQuestionButton.classList.remove('instruction-answered-button-1');
+                        previousQuestionButton.classList.remove('question-nos');
+                        previousQuestionButton.classList.add('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.add('mark-for-review-and-answered-img');
+                    }
+
+
+                    event.preventDefault();
+                });
+
+
+                //only for mobile
+                //if click on mark for review button
+                tab_markForReview.addEventListener('click', function() {
+                    const tab_currentQuestion = tab_currentPage; // Replace with the current question number
+                    const tab_currentQuestionButton = document.querySelector(`[tab_data-question="${tab_currentQuestion}"]`);
+                    const tab_previousQuestion = tab_previousPage;
+                    const tab_previousQuestionButton = document.querySelector(`[tab_data-question="${tab_previousQuestion}"]`);
+
+                    //markfor review answered question img div id 
+                    const tab_CurretMarkForReview =  document.querySelector(`[tab_data-question-img="${tab_previousQuestion}"]`);
+                    
+                    //current page
+                    if(tab_visitedUnanswered.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+                    if(tab_unvisited.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+
+                    if(tab_markforReview.includes(tab_previousQuestion)){
+                        // add markforReview class and other class remove
+                        tab_previousQuestionButton.classList.remove('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.add('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+                    //if previous question in markforReviewAnswered
+                    if(tab_markforReviewAnswered.includes(tab_previousQuestion)){
+                        // add markforReviewAnswered class and other class remove
+                        tab_previousQuestionButton.classList.remove('tab_instruction-not-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_previousQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_previousQuestionButton.classList.remove('tab_question-nos');
+                        tab_previousQuestionButton.classList.add('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.add('tab_mark-for-review-and-answered-img');
+                    }
+
+
+                    event.preventDefault();
+                });
+
+                //if clear response
+                clearResponse.addEventListener('click', function() {
+                    const currentQuestion = currentPage; // Replace with the current question number
+                    const currentQuestionButton = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    //markfor review answered question img div id 
+                    const CurretMarkForReview =  document.querySelector(`[data-question-img="${currentQuestion}"]`);
+
+                    currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                    currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                    currentQuestionButton.classList.remove('instruction-answered-button-1');
+                    currentQuestionButton.classList.remove('question-nos');
+                    currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                    CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+
+
+                    event.preventDefault();
+                });
+
+                //only for mobile
+                //if clear response
+                tab_clearResponse.addEventListener('click', function() {
+                    const tab_currentQuestion = tab_currentPage; // Replace with the current question number
+                    const tab_currentQuestionButton = document.querySelector(`[tab_data-question="${tab_currentQuestion}"]`);
+                    //markfor review answered question img div id 
+                    const tab_CurretMarkForReview =  document.querySelector(`[tab_data-question-img="${tab_currentQuestion}"]`);
+
+                    tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                    tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                    tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                    tab_currentQuestionButton.classList.remove('tab_question-nos');
+                    tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                    tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+
+
+                    event.preventDefault();
+                });
+
+                //prevous question visit
+                previousvisit.addEventListener('click', function() {
+                    const currentQuestion = currentPage; // Replace with the current question number
+                    const currentQuestionButton = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    //markfor review answered question img div id 
+                    const CurretMarkForReview =  document.querySelector(`[data-question-img="${currentQuestion}"]`);
+                    
+                    //current page
+                    if(visitedUnanswered.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    if(unvisited.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    event.preventDefault();
+                });
+
+                {% for x in Questions %}
+                //if visit on question using question plate
+                questionPlate{{x.question_no}}.addEventListener('click', function() {
+                    const currentQuestion = currentPage; // Replace with the current question number
+                    const currentQuestionButton = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    
+                    //current page
+                    if(visitedUnanswered.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    if(unvisited.includes(currentQuestion)){
+                        currentQuestionButton.classList.add('instruction-not-answered-button-1');
+                        currentQuestionButton.classList.remove('instruction-marked-for-review-button-2');
+                        currentQuestionButton.classList.remove('instruction-answered-button-1');
+                        currentQuestionButton.classList.remove('question-nos');
+                        currentQuestionButton.classList.remove('mark-for-review-and-answered-button');
+                        CurretMarkForReview.classList.remove('mark-for-review-and-answered-img');
+                    }
+
+                    event.preventDefault();
+                });
+
+                //only for mobile
+                tab_questionPlate{{x.question_no}}.addEventListener('click', function() {
+                    const tab_currentQuestion = tab_currentPage; // Replace with the current question number
+                    const tab_currentQuestionButton = document.querySelector(`[tab_data-question="${tab_currentQuestion}"]`);
+                    
+                    //current page
+                    if(tab_visitedUnanswered.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+                    if(tab_unvisited.includes(tab_currentQuestion)){
+                        tab_currentQuestionButton.classList.add('tab_instruction-not-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-marked-for-review-button-2');
+                        tab_currentQuestionButton.classList.remove('tab_instruction-answered-button-1');
+                        tab_currentQuestionButton.classList.remove('tab_question-nos');
+                        tab_currentQuestionButton.classList.remove('tab_mark-for-review-and-answered-button');
+                        tab_CurretMarkForReview.classList.remove('tab_mark-for-review-and-answered-img');
+                    }
+
+                    event.preventDefault();
+                });
+
+                {% endfor %}
+
+            });
+
+
+            //numerical type answer 
+            //numeric question white space and character not allowed
+            {% for x in Questions %}
+                {% if x.question_type == 'NAT'%}
+                    function onlyNumberKey{{x.question_no}}(evt) {
+                                
+                        // Only ASCII character in that range allowed
+                        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                            return false;
+                        return true;
+                    }
+
+                    function removeSpaces{{x.question_no}}(input) {
+                        const originalValue = input.value;
+                        const trimmedValue = originalValue.trim();
+                        if (originalValue !== trimmedValue) {
+                            input.value = trimmedValue;
+                        }
+                    }
+
+                    /* testseries numeric type answer */
+                    function insertValue{{x.question_no}}(value) {
+                        var textbox = document.getElementById('nat-answer{{x.question_no}}');
+                        textbox.value += value;
+                    }
+
+                    function backspace{{x.question_no}}() {
+                        var textbox = document.getElementById('nat-answer{{x.question_no}}');
+                        var currentValue = textbox.value;
+                        textbox.value = currentValue.slice(0, -1);
+                      }
+                    
+                      function tab_onlyNumberKey{{x.question_no}}(evt) {
+                                
+                        // Only ASCII character in that range allowed
+                        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                            return false;
+                        return true;
+                    }
+
+                    function tab_removeSpaces{{x.question_no}}(input) {
+                        const originalValue = input.value;
+                        const trimmedValue = originalValue.trim();
+                        if (originalValue !== trimmedValue) {
+                            input.value = trimmedValue;
+                        }
+                    }
+
+                    /* testseries numeric type answer */
+                    function tab_insertValue{{x.question_no}}(value) {
+                        var textbox = document.getElementById('tab_nat-answer{{x.question_no}}');
+                        textbox.value += value;
+                    }
+
+                    function tab_backspace{{x.question_no}}() {
+                        var textbox = document.getElementById('tab_nat-answer{{x.question_no}}');
+                        var currentValue = textbox.value;
+                        textbox.value = currentValue.slice(0, -1);
+                      }
+                {% endif %}
+            {% endfor %}
+
+
+            //test final submit 
+            function onSubmitForm() {
+                // Show the confirmation dialog
+                var result = window.confirm("Are you sure you want to submit the test!");
+
+                if (result) {
+                    // User clicked "OK" (Submit), proceed with form submission
+                    return true;
+                } else {
+                    // User clicked "Cancel", prevent form submission
+                    return false;
+                }
+            }
+
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+            
+</script>
+    </body>
+</html>

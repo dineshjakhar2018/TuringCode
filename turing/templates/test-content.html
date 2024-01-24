@@ -1,0 +1,367 @@
+{% load static %}
+<div class="content" id="content">
+    <div class="content-left">
+        <div class="pc-content">
+            <div class="logo">
+                <img src="{% static 'assets/img/logo.png' %}">
+                <p>Turing Code Online Test Series for GATE (CS, DS & AI) and UGC NET/JRF (Computer Science and Applications)</p>
+            </div>
+            <div class="calculator">
+                <div class="calculator-left">
+                    <button id="paper-name-button">{{TestName}}</button>
+                </div>
+                <div class="calculator-right">
+                    <i id="fa" class="fa fa-calculator"></i>
+                </div>
+            </div>
+            <div class="paper-section">
+                <div class="paper-section-left">
+                    <form>
+                        <input type="hidden" value="{{ CurrentPaper }}" name="CurrentPaper">
+                        {% csrf_token %}
+                        <input type="button" {% if CurrentPaper == 1 %} id="paper-section-left-active" {% else %} id="paper-section-left-inactive" {% endif %} onclick="PaperChange_1();" value="{{ PaperName.0 }}">
+                        {% if NoOfPaper == 2 %} <input type="button" {% if CurrentPaper == 2 %} id="paper-section-left-active" {% else %} id="paper-section-left-inactive" {% endif %} onclick="PaperChange_2();" value="{{ PaperName.1 }}"> {% endif %}
+                    </form>
+                </div>
+                <div class="paper-section-right">
+                    <p>Time Left <span id="timer">00:00:00</span> </p>
+                </div>
+            </div>
+            <div class="question-type">
+                <div class="question-type-left">
+                    <h3>Question Type : {{ QuestionType }}</h3>
+                </div>
+                <div class="question-type-right">
+                    <p>Mark for correct answer <span style="color:green">{{ PositiveMarks }}</span> | Negative marks <span style="color:red;"> {{ NegativeMarks }}</span></p>
+                </div>
+            </div>
+            <div class="question-no">
+                <h4>Question No. {{ QuestionNo }}  </h4>
+            </div>
+        </div>
+        <div class="question">
+            <div class="pc-question-content">
+                <div class="question-view">
+                    <img src="{{ CurrentQuestion.question_img.url }}">
+                </div>
+                <form id="myForm">
+                    {% csrf_token %}
+                    {% if QuestionType == 'NAT' %}
+                    <div class="numeric-plate">
+                        <div class="numeric-plate-content">
+                            <input type="text" id="nat-answer" value="{% if StudentAnswer.answer != 'e' %} {% spaceless %}  {{StudentAnswer.answer}} {% endspaceless %} {% endif %}" onkeypress="return onlyNumberKey(event)" onfocus="removeSpaces(this)" autocomplete="off" name="NAT">
+                            <div class="nat-plate-options">
+                                <input type="button" id="back-space" onclick="backspace()" value="Backspace">
+                                <input type="button" id="nat-numbers" onclick="insertValue(7)" value="7">
+                                <input type="button" id="nat-numbers" onclick="insertValue(8)" value="8">
+                                <input type="button" id="nat-numbers" onclick="insertValue(9)" value="9">
+                                <input type="button" id="nat-numbers" onclick="insertValue(4)" value="4">
+                                <input type="button" id="nat-numbers" onclick="insertValue(5)" value="5">
+                                <input type="button" id="nat-numbers" onclick="insertValue(6)" value="6">
+                                <input type="button" id="nat-numbers" onclick="insertValue(1)" value="1">
+                                <input type="button" id="nat-numbers" onclick="insertValue(2)" value="2">
+                                <input type="button" id="nat-numbers" onclick="insertValue(3)" value="3">
+                                <input type="button" id="nat-numbers" onclick="insertValue(0)" value="0">
+                                <input type="button" id="nat-numbers" onclick="insertValue('.')" value=".">
+                                <input type="button" id="nat-numbers" onclick="insertValue('-')" value="-">
+                                <input type="button" id="nat-arrow-1" onclick="moveCursorLeft()" value="&larr;">
+                                <input type="button" id="nat-arrow-2" onclick="moveCursorRight()" value="&rarr;">
+                                <input type="reset" id="back-space" value="Clear All">
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    
+                    {% for option in QuestionOptions %}
+                        <div class="question-mcq-msq">
+                            <div class="question-mcq-msq-left">
+                                {% if QuestionType == 'MSQ'%}
+                                    <input type="checkbox"  name="option{{forloop.counter}}" id="form_data" value="{{ option.option_name }}"
+                                    
+                                    {% if option.option_name == 'A' %} 
+                                        {% if 'A' in StudentAnswer.answer %}
+                                             checked 
+                                        {% endif %}
+                                    {% elif option.option_name == 'B' %} 
+                                        {% if 'B' in StudentAnswer.answer %}
+                                             checked 
+                                        {% endif %}
+                                    {% elif option.option_name == 'C' %} 
+                                        {% if 'C' in StudentAnswer.answer %}
+                                             checked 
+                                        {% endif %}
+                                    {% elif option.option_name == 'D' %} 
+                                        {% if 'D' in StudentAnswer.answer %}
+                                             checked 
+                                        {% endif %}
+                                    {% else %}
+                                    {% endif %}>
+
+
+                                {% else %}
+                                    <input type="radio" name="form_data" id="form_data" value="{{ option.option_name }}" {% if StudentAnswer.answer == option.option_name %} checked {% endif %}>
+                                {% endif %}
+                                
+                            </div>
+                            <div class="question-mcq-msq-right">
+                                <img src="{{ option.option_img.url }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                {% endif %}
+            </div>
+        </div>
+        <div class="question-bottom-button">
+            <div class="question-bottom-button-left">
+                <input type="button" id="mark-for-review" onclick="MarkForReviewSubmit();" value="Mark For Review & Next">
+                <input type="reset" id="clear-response" onclick="ClearResponseSubmit();" value="Clear Response">
+            </div>
+            <div class="question-bottom-button-right">
+                {% if QuestionNo > 1 %} <input type="reset" id="clear-response" onclick="PreviousQuestion();" value="Previous"> {% endif %}
+                <input type="button" id="save-next" onclick="AnswerSubmit();" value="Save & Next">
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div class="content-right">
+        <div class="profile">
+            <div class="student-pic">
+                <img src="{% static 'assets/img/student-icon.png' %}">
+            </div>
+            <div class="student-name">
+                <p>{{ StudentName|title }}</p>
+            </div>
+        </div>
+        <div class="question-content">
+            <div class="question-content-instruction">
+                <div class="question-status-instruction">
+                        <input type="button" id="instruction-answered-button" value="5">
+                        <p>Answered</p>
+                </div>
+                <div class="question-status-instruction">
+                    <input type="button" id="instruction-not-answered-button" value="19">
+                    <p>Not Answered</p>
+                </div>
+                <div class="question-status-instruction">
+                    <input type="button" id="instruction-not-visit-button" value="28">
+                    <p>Not Visit</p>
+                </div>
+                <div class="question-status-instruction">
+                    <input type="button" id="instruction-marked-for-review-button" value="19">
+                    <p>Marked for Review</p>
+                </div>
+                <div class="question-status-instruction">
+                    <input type="button" id="instruction-marked-for-review-button-1" value="55">
+                    <p>Answered & Marked for Review (Will be considered for evaluation)</p>
+                </div>
+            </div>
+
+            <div class="subject-name">
+                <p>{% if CurrentPaper == 1 %} {{ PaperName.0 }} {% else %} {{ PaperName.1 }} {% endif %} </p>
+            </div>
+
+            <div class="question-plate">
+                <form>
+                    {% csrf_token %}
+                <p>Choose a Question</p>
+                {% for x in StudentAllAnswer %}
+                    {% if x.visited == 0 %}
+
+                        <input type="button" id="question-no" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 0 %}
+
+                        <input type="button" id="instruction-not-answered-button-1" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 0 %}
+
+                        <input type="button" id="instruction-answered-button-1" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 1 %}
+
+                        <input type="button" id="instruction-marked-for-review-button-2" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 1 %}
+
+                        <input type="button" id="instruction-marked-for-review-button-2" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+                    
+                    {% else %}
+
+                    {% endif %}
+                {% endfor %}
+                <div class="question-plate-bottom"> </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="final-submit">
+            <form action="{% url 'test_submit' %}" method="post" id="testForm" onsubmit="return onSubmitForm()">
+                {% csrf_token %}
+                <input type="submit" id="final-submit-button" value="Submit">
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--mobile and tablet contents-->
+<div id="fullscreenElement" class="tab-content">
+    <div class="top">
+        <div class="top-1">
+            <form>
+                <input type="hidden" value="{{ CurrentPaper }}" name="CurrentPaper">
+                {% csrf_token %}
+                <input type="button" {% if CurrentPaper == 1 %} id="paper-section-left-active" {% else %} id="paper-section-left-inactive" {% endif %} onclick="PaperChange_1();" value="{{ PaperName.0 }}">
+                {% if NoOfPaper == 2 %} <input type="button" {% if CurrentPaper == 2 %} id="paper-section-left-active" {% else %} id="paper-section-left-inactive" {% endif %} onclick="PaperChange_2();" value="{{ PaperName.1 }}"> {% endif %}
+            </form>
+         </div>
+        <div class="top-2">
+            <div class="top-2-left">
+               <a href="http://turingcode.in/test-series/"> <input type="button" id="back-button" value="Back"> </a>
+            </div>
+            <div class="top-2-right">
+                <p>Time Left : <span id="timer-1">00:00:00</span></p>
+            </div>
+        </div>
+        <div class="top-3">
+            {% for x in StudentAllAnswer %}
+                    {% if x.visited == 0 %}
+                        <form>
+                            {% csrf_token %}
+                        <input type="button" class="tab-question-no" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 0 %}
+
+                        <input type="button" class="tab-question-no-visited-not-answered" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 0 %}
+
+                        <input type="button" class="tab-question-no-visited-and-answered" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer == 'e' and x.markforreview == 1 %}
+
+                        <input type="button" class="tab-question-no-mark-for-review" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+
+                    {% elif x.visited == 1 and x.answer != 'e' and x.markforreview == 1 %}
+
+                        <input type="button" class="tab-question-no-mark-for-review" value="{{ forloop.counter }}" onclick="question_no = MyQuestion({{ forloop.counter }});">
+                        </form>
+                    {% else %}
+
+                    {% endif %}
+                {% endfor %}
+        </div>
+        <div class="top-4">
+            <p>Question No. {{ QuestionNo }}</p>
+        </div>
+    </div>
+        <div class="tab-question">
+            <div class="tab-que-view">
+                <div class="tab-question-view">
+                    <img src="{{ CurrentQuestion.question_img.url}}">
+                </div>
+                <form id="myForm">
+                    {% csrf_token %}
+                    {% if QuestionType == 'NAT' %}
+                        <div class="numeric-plate">
+                            <div class="numeric-plate-content">
+                                <input type="text" id="nat-answer" value="{% if StudentAnswer.answer != 'e' %} {% spaceless %}{{StudentAnswer.answer}} {% endspaceless %} {% endif %}" onkeypress="return onlyNumberKey1(event)"  onfocus="removeSpaces(this)" autocomplete="off" name="NAT">
+                                <div class="nat-plate-options">
+                                    <input type="button" id="back-space" onclick="backspace()" value="Backspace">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(7)" value="7">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(8)" value="8">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(9)" value="9">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(4)" value="4">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(5)" value="5">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(6)" value="6">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(1)" value="1">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(2)" value="2">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(3)" value="3">
+                                    <input type="button" id="nat-numbers" onclick="insertValue(0)" value="0">
+                                    <input type="button" id="nat-numbers" onclick="insertValue('.')" value=".">
+                                    <input type="button" id="nat-numbers" onclick="insertValue('-')" value="-">
+                                    <input type="button" id="nat-arrow-1" onclick="moveCursorLeft()" value="&larr;">
+                                    <input type="button" id="nat-arrow-2" onclick="moveCursorRight()" value="&rarr;">
+                                    <input type="reset" id="back-space" value="Clear All">
+                                </div>
+                            </div>
+                        </div>
+
+                        {% else %}
+                            {% for option in QuestionOptions %}
+                            <div class="tab-option-view">
+                                    <div class="tab-option-view-left">
+                                        {% if QuestionType == 'MSQ'%}
+                                            <input type="checkbox"  name="option{{forloop.counter}}" id="form_data" value="{{ option.option_name }}"
+                                            
+                                            {% if option.option_name == 'A' %} 
+                                                {% if 'A' in StudentAnswer.answer %}
+                                                    checked 
+                                                {% endif %}
+                                            {% elif option.option_name == 'B' %} 
+                                                {% if 'B' in StudentAnswer.answer %}
+                                                    checked 
+                                                {% endif %}
+                                            {% elif option.option_name == 'C' %} 
+                                                {% if 'C' in StudentAnswer.answer %}
+                                                    checked 
+                                                {% endif %}
+                                            {% elif option.option_name == 'D' %} 
+                                                {% if 'D' in StudentAnswer.answer %}
+                                                    checked 
+                                                {% endif %}
+                                            {% else %}
+                                            {% endif %}>
+
+
+                                        {% else %}
+                                            <input type="radio" name="form_data" id="form_data" value="{{ option.option_name }}" {% if StudentAnswer.answer == option.option_name %} checked {% endif %}>
+                                        {% endif %}
+                                        
+                                    </div>
+                                    <div class="tab-option-view-right">
+                                        <img src="{{ option.option_img.url }}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        
+                        {% endif %}
+            
+                
+                
+                
+            </div>
+        </div>
+        <div class="top-5">
+            <input type="button" id="tab-clear-response" onclick="ClearResponseSubmit();" value="Clear Response">
+            <input type="button" id="tab-mark-for-review" onclick="MarkForReviewSubmit();" value="Mark for Review & Next">
+        </div>
+        <div class="top-6">
+            <input type="submit" id="tab-test-submit" value="Submit">
+            <input type="button" id="tab-save-next" onclick="AnswerSubmit();" value="Save & Next">
+        </div>
+    </form>
+</div>

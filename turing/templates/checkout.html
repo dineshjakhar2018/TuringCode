@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style-4.css' %}" type="text/css" media="all">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    </head>
+    <body>
+
+        <div class="content">
+            <div class="content-checkout">
+                <h2>Checkout</h2>
+                <p>Course :{% if type == 'course' %}{{ course.name }} {% else %} {{ course.title }} {% endif %} </p>
+                <p>Course Amount : &#8377; {{ course.total_price }}</p>
+               <p>Course Discount : &#8377; - {{ discount }} </p> 
+                <P>GST(%) : 0 %</P>
+                <p>Total Amount : &#8377; {{ course.price }} </p>
+                <div class="button">
+                    <!--<form action="{% url 'course-enroll' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ course.slug }}" name="CourseSlug">
+                        <input type="hidden" value="{{ course.price }}" name="Amount">
+                        <input type="hidden" value="{{ type }}" name="PackageType">
+                        <input type="submit" id="checkout-button" value="Checkout">
+                    </form>-->
+                    <button id="checkout-button">Pay Now</button>
+                </div>
+            </div>
+            
+        </div>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        
+        <script>
+        var options = {
+            "key": "{{razorpay_key_id}}", // Enter the Key ID generated from the Dashboard
+            "amount": "{{response.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Turing Code",
+            "description": "Test Transaction",
+            "image": '{% static "assets/img/refresh.png" %}',
+            "order_id": '{{response.id}}', //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response){
+                // Get the CSRF token from the cookie
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "course-enroll" %}',
+                    data: {
+                        'status' : 'Success',
+                        'order_id': response.razorpay_order_id,
+                        'CourseSlug' : '{{course.slug}}',
+                        'PackageType':'{{type}}',
+                        // Include the CSRF token in the request data
+                        'csrfmiddlewaretoken': getCookie('csrftoken')
+                    },
+                    beforeSend: function(xhr, settings) {
+                        // Include the CSRF token in the request headers
+                        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    },
+                    success: function(data) {
+                        // On successful form submission, load the next content
+                        // Set the scroll position back to the stored value
+                        if(data.status=='Success'){
+                            alert('Please wait for some time.');
+                            window.location.href = 'http://127.0.0.1:8000/courses/'+data.url;
+                        }
+                            else{
+                                alert('Something went wrong. Please wait for some time.');
+                                if({{type}} == 'course'){
+                                    window.location.href = 'http://127.0.0.1:8000/courses/';
+                                }
+                                    else if({{type}} == 'test-series'){
+                                        window.location.href = 'http://127.0.0.1:8000/test-series/';
+                                    }
+                                        else{
+                                            window.location.href = 'http://127.0.0.1:8000/home/';
+                                        }
+                                
+                            }
+                    },
+                    error: function() {
+                        alert('Something went wrong. Please wait for some time.');
+                    }
+                });
+            },
+            "prefill": {
+                "name": "{{student.name}}",
+                "email": "{{student.email}}",
+            },
+            "theme": {
+                "color": "#ff4c4c"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+                alert('We regret to inform you that the payment for your recent transaction has failed.');
+        });
+        document.getElementById('checkout-button').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+        }
+
+        // Function to get CSRF token from the cookie
+        function getCookie(name) {
+            const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return cookieValue ? cookieValue[2] : null;
+        }
+        </script>
+        
+
+    </body>
+</html>

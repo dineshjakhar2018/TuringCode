@@ -1,0 +1,312 @@
+{% if email_type == 'course_enroll' or email_type == 'course_testseries_enroll' or email_type == 'testseries_enroll' %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2{
+            color:#ff4c4c;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .invoice-table th {
+            background-color: #f2f2f2;
+        }
+
+        .cta-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff4c4c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!--
+            <img src="https://drive.google.com/uc?export=view&id=1kmUiIDzKnFVhCr_HujL2q3HaHQAKjeUo" alt="Turing Code">
+            -->
+            <h2>Enrollment Successful</h2>
+        </div>
+
+        <div class="section">
+            <p>Congratulations! You have successfully enrolled in the {{data.package_name|upper}} on Turing Code. We are delighted to have you as part of our learning community.</p>
+        </div>
+
+        <div class="section">
+            <h3>Enrollment Details</h3>
+            <ul>
+                <li><strong>Course/Test Series:</strong> {{data.package_name|upper}}</li>
+                <li><strong>Enrollment Date:</strong> {{data.date}} </li>
+                <li><strong>Order ID:</strong> {{data.order_id}}</li>
+                <li><strong>Total Amount Paid:</strong> {{data.total_price}}</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>Invoice Details</h3>
+            <table class="invoice-table">
+                <tr>
+                    <th>Package Name</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <td>{{data.item1.description|upper}}</td>
+                    <td>{{data.item1.price}}</td>
+                    <td>{{data.item1.discount}}</td>
+                    <td>{{data.item1.total_price}}</td>
+                </tr>
+                {% if data.item2 != 'None' %}
+                    <tr>
+                        <td>{{data.item2.description|upper}}</td>
+                        <td>{{data.item2.price}}</td>
+                        <td>{{data.item2.discount}}</td>
+                        <td>{{data.item2.total_price}}</td>
+                    </tr>
+                {% endif %}
+                    
+                <tr>
+                    <td colspan="3" style="text-align: right;">Subtotal</td>
+                    <td>{{data.subtotal}}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;">Tax (%)</td>
+                    <td>{{data.tax}}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right;"><strong>Total Amount Paid</strong></td>
+                    <td><strong>{{data.total_price}}</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--
+        <div class="cta-button">
+            <a href="
+            {% if data.package_type == 'çourse+testseries' or data.package_type == 'çourse'%}http://turingcode.in/courses/course-details/{{data.course_slug}}{%  else %}http://turingcode.in/test-series/test-series-details/{{data.course_slug}}{% endif %}" style="color:#fff;" class="button">Access Your Course/Test Series Now</a>
+        </div>
+        -->
+        
+        <div class="footer">
+            <p>Thank you for choosing Turing Code. We look forward to providing you with a valuable learning experience. If you have any feedback or questions, feel free to contact us at turingcodecse@gmail.com</p>
+        </div>
+    </div>
+</body>
+
+</html>
+{# the above is enroll template and the following are otp and register success#}
+{% else %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: left;
+        }
+
+        .logo img {
+            max-width: 150px;
+        }
+
+        .turing-code {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .turing-code h2{
+            color:#ff4c4c;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 30px;
+            font-weight: 500;
+        }
+        .otp-verify-content {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+        .otp-verify-content p{
+            font-family: Arial, Helvetica, sans-serif; 
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 32px; 
+            margin: 0 0 24px;
+            color:#333;
+        }
+
+        .social-links {
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .social-links img {
+            max-width: 30px;
+        }
+        #üsername{
+            color:#ff4c4c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!--
+        <div class="logo">
+            <img src="https://drive.google.com/uc?export=view&id=1kmUiIDzKnFVhCr_HujL2q3HaHQAKjeUo" alt="Logo">
+        </div>
+        -->
+
+        <div class="turing-code">
+            <h2>Turing Code</h2>
+        </div>
+
+        <div class="otp-verify-content">
+            <p id="üsername">Dear {{username|title}},</p>
+
+            {% if email_type == 'email-verify'%}
+
+                <p>Thank you for choosing to register with Turing Code.
+                    To complete the registration process and ensure the security of your account,
+                    please verify your email address by entering the One-Time Password (OTP) provided below.</p>
+                <p><strong>OTP: {{otp}}</strong></p>
+                <p>Please enter this OTP on the email verification page to validate your email address. The OTP is valid for a limited time, so make sure to complete the verification process promptly.</p>
+                <p>If you did not initiate this registration, please ignore this email. Your account will only be activated once the correct OTP is entered.</p>
+                <p>Thank you for choosing Turing Code. We look forward to providing you with a seamless and secure online experience. </p>
+
+            {% elif email_type == 'email-verify-resend' %}
+
+                <p>We noticed that you attempted to register with Turing Code but encountered an issue. To help you complete the registration process and ensure the security of your account, we are resending the One-Time Password (OTP) for email verification.</p>
+                <p><strong>New OTP: {{otp}}</strong></p>
+                <p>Please enter this new OTP on the email verification page to validate your email address. As a security measure, the OTP is valid for a limited time, so we recommend completing the verification process promptly.</p>
+                <p>If you did not initiate this registration, please ignore this email. Your account will only be activated once the correct OTP is entered.</p>
+                <p>Thank you for choosing Turing Code. We look forward to providing you with a seamless and secure online experience. </p>
+
+
+            {% elif email_type == 'reset-password' %}
+
+                <p>We received a request to reset the password for your account at Turing Code. To complete the process, please use the following One-Time Password (OTP):</p>
+                <p><strong>OTP: {{otp}}</strong></p>
+                <p>This OTP is valid for a limited time. Please enter it on the password reset page to proceed. If you didn't initiate this request, please ignore this email, and your account will remain secure.</p>
+                <p>For security reasons, please do not share this OTP with anyone. If you encounter any issues or did not request a password reset, contact our support team immediately.</p>
+                <p>Thank you for choosing Turing Code. We are committed to ensuring the security of your account. </p>
+
+            {% elif email_type == 'register-success' %}
+
+                <p>Congratulations! Your registration with Turing Code is now complete, and we are thrilled to welcome you to our online learning community.</p>
+                <p><strong>What's Next?</strong></p>
+                <p><strong>Access Free Resources: </strong> Dive into our extensive collection of free previous year papers for GATE CS, DS & AI, and UGC NET CS. Experience the real exam environment with our user-friendly interface.</p>
+                <p><strong>Learn with Solutions: </strong> Gain a deeper understanding with detailed text and video solutions for each question. Our goal is to support your learning journey comprehensively.</p>
+                <p><strong>Engage with the Community:</strong> Connect with fellow learners, participate in discussions, and share insights. Learning is not just about content; it's also about collaboration. </p>
+                <p><strong>Support and Assistance:</strong></p>
+                <p>If you have any questions or need assistance, our support team is ready to help. Your success is our priority.</p>
+                <p>Thank you for choosing Turing Code. We look forward to being a valuable part of your educational journey.</p>
+
+            {% endif %}
+
+            <p>Best regards, </p>
+            Turing Code Team<br>
+            www.turingcode.in<br>
+            +91 9116407264 <br>
+            contact@turingcode.in</p>
+        </div>
+    <!--
+        <div class="social-links">
+            <a href="https://www.facebook.com/" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Facebook_Logo_2023.png/600px-Facebook_Logo_2023.png" alt="Facebook">
+            </a>
+            <a href="https://twitter.com/" target="_blank">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV82YKSZryiX92m5eyU_H4xk3bs8dJXn9TqPD4HcXKGFp0uKvVcYJYbnYH7VgGU8cVojc&usqp=CAU" alt="Twitter">
+            </a>
+            <a href="https://youtube.com/@turingcodegate?si=TFa5hxgeHrnTDOkO" target="_blank">
+                <img src="https://img.freepik.com/premium-vector/youtube-logo-circle-red-social-media-logo_197792-4982.jpg?size=338&ext=jpg&ga=GA1.1.632798143.1705363200&semt=ais" alt="YouTube">
+            </a>
+        </div>
+    -->
+    </div>
+</body>
+</body>
+</html>
+
+{% endif %}
+

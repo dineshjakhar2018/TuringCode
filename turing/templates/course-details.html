@@ -1,0 +1,216 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+        <div class="content">
+            
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2> {{ courses.exam_for }} </h2>
+                </div>
+
+                <div class="course-detail-content">
+                    <div class="course-detail-content-1">
+                        <img src="{{ courses.poster.url }}">
+                        <h2>{{ courses.name }}</h2>
+                        <div class="course-detail-content-1-inner">
+                            <div class="course-details-content-1-inner-left">
+                                
+                                {% if 'Not Enroll' in enroll %}
+                                <p>  🕑 Validity : {{ courses.validity }} Days </p>
+                                {% else %}
+                                <p> 🕑 {% if enroll.1 < 0 %} Expired {% else %}Expire in : {{ enroll.1 }} Days {% endif %} </p>
+                                {% endif  %}
+                                
+                                <h3> &#8377; {{ courses.price }} <span id="course-total-price"> &#8377; {{ courses.total_price }}</span></h3>
+                            </div>
+                            
+                            <div class="course-details-content-1-inner-right">
+                                {% if 'Not Enroll' in enroll %}
+                                    <a href="{% url 'checkout' 'course' courses.slug %}"><input type="button" id="course-checkout-button" value="Enroll Now"></a>
+                                {% else %}
+                                    {% if enroll.1 < 0 %}
+                                        <input type="button" id="course-checkout-button-red" value="Expired">
+                                    {% else %}
+                                        <input type="button" id="course-checkout-button-green" value="Enrolled">
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="course-detail-content-2">
+                        <h2>Course Content</h2>
+                        <div class="course-detail-content-2-inner">
+                            
+                            {% for x in subjects %}
+                            <div {% if forloop.first %}id="list-top-content" {% endif %} class="collapsible"><h4>{{ forloop.counter }}. {{ x }} </h4></div>
+                            <div class="list-content">
+                                {% for y in videos %}
+                                    {% if x == y.subject_name %}
+                                        <a href="
+                                        {% if 'Not Enroll' in enroll %}
+                                            {% if y.premium == 0 %}
+                                                {{ courses.slug }}/play-video/{{ y.slug }}
+                                            {% else %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if enroll.1 >= 0 %}
+                                                {{ courses.slug }}/play-video/{{ y.slug }}
+                                            {% else %}
+                                                {% if y.premium == 0 %}
+                                                    {{ courses.slug }}/play-video/{{ y.slug }}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                        ">
+                                            <div class="list-inner-content">
+                                                <img src="{% static 'assets/img/cam-recorder.png' %}">
+                                                <p>{{ y.title }}</p>
+                                                {% if 'Not Enroll' in enroll %}
+                                                    {% if y.premium == 0 %}
+                                                        <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                    {% else %}
+                                                        <i class="fa fa-lock"></i>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if enroll.1 < 0 %}
+                                                        {% if y.premium == 0 %}
+                                                            <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                        {% else %}
+                                                            <i class="fa fa-lock"></i>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <i class="fa fa-unlock"></i>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+
+
+                                {% for z in notes %}
+                                    {% if x == z.subject_name %}
+                                        <a href="
+                                        {% if 'Not Enroll' in enroll %}
+                                            {% if z.premium == 0 %}
+                                                {{ courses.slug }}/notes-view/{{ z.slug }}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if enroll.1 >= 0 %}
+                                                {{ courses.slug }}/notes-view/{{ z.slug }}
+                                            {% else %}
+                                                {% if z.premium == 0 %}
+                                                    {{ courses.slug }}/notes-view/{{ z.slug }}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                        ">
+                                            <div class="list-inner-content">
+                                                <img src="{% static 'assets/img/homework.png' %}">
+                                                <p>{{ z.title }}</p>
+                                                {% if 'Not Enroll' in enroll %}
+                                                    {% if z.premium == 0 %}
+                                                        <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                    {% else %}
+                                                        <i class="fa fa-lock"></i>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if enroll.1 >= 0 %}
+                                                        <i class="fa fa-unlock"></i>
+                                                    {% else %}
+                                                        {% if z.premium == 0 %}
+                                                            <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                        {% else %}
+                                                            <i class="fa fa-lock"></i>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                            {% endfor %}
+                            
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="course-detail-content-3">
+                        <h2>About Course</h2>
+                        <div class="about-course-content">
+                            {% autoescape off %}
+                                {{ courses.about }}
+                            {% endautoescape %}
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+            
+            for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                  content.style.maxHeight = null;
+                } else {
+                  content.style.maxHeight = content.scrollHeight + "px";
+                } 
+              });
+            }
+        </script>
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

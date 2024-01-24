@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-6.css' %}" type="text/css" media="all">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+        <!--
+        <div class="about-header">
+          <h3> Test Series / {{ Title }} </h3>
+        </div>
+        -->
+
+        <!--
+        <div class="testseries-header-content">
+          <button class="collapsible"> Test Features </button>
+          <div class="test-content">
+            {% for feature in TestFeatures %}
+                <div class="test-content-inner">
+                  <img src ="{% static 'assets/img/check.png' %}">
+                  <h5> {{ feature.feature }} </h5>
+                </div>
+            {% endfor %}
+          </div>
+        </div>
+        -->
+
+        <div class="testseries-feature">
+          <div class="testseries-feature-header">
+            <h4> Test Features </h4>
+          </div>
+          <div class="testseries-feature-content-all">
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Same exam interface as 
+                {% if TestSeries.exam == 'NET' %} 
+                  UGC NET/JRF
+                {% else %}
+                  {{ TestSeries.exam}}
+                {% endif %}
+                  exam </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Students can view their current rank out of all the students who have attempted the test. </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Display the total marks obtained by the student in the test. </p>
+              <p id="feature-sub-content"> <img id="test-check-mark" src="{% static 'assets/img/tick.png'%}">Provide information on the marks earned for correctly answered questions. </p>
+              <p id="feature-sub-content"> <img id="test-check-mark" src="{% static 'assets/img/tick.png'%}">Show the marks deducted for incorrectly answered questions (if applicable). </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Display the overall percentage obtained by the student in the test. </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Include details about the total questions attempted, questions left, correct questions, and incorrect questions. </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Enable students to compare their performance with the top scorers. </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Display information on how many marks they are behind or ahead of the top performers. </p>
+            </div>
+
+            <div class="testseries-feature-content">
+              <p> <img id="test-check-mark" src="{% static 'assets/img/check.png'%}"> Provide both video and text solutions for each question to aid in understanding. </p>
+            </div>
+          </div>
+        </div>
+
+          <div class="testseries-content">
+            <div class="test-details">
+                  <div class="course">
+                      <!-- Test in Testseries start here -->
+                      {% for test in Tests %}
+                      {% if forloop.counter|divisibleby:2 %}
+                          <div class="test-details-content">
+                              <div id="test-special" class="test-details-content-1">
+                                  <h3>{{ test.test_name }}</h3>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/expire_in.png' %}">
+                                  <p> Validity : {{ test.testseries.validity }} Days </p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/question-mark.png' %}">
+                                  <p>Total Question : {{ test.total_question }}</p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/duration.png' %}">
+                                  <p>Duration : {{ test.duration }} Minutes</p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/total_marks.png' %}">
+                                  <p>Total Marks : {{ test.total_marks }}</p>
+                              </div>
+                              <div class="test-details-content-button">
+                                {% if test.status == 1 %}
+                                    <a href="http://turingcode.in/test-series" target="_blank">
+                                      <input type="button" id="test-start-button-1" value="Start">
+                                    </a>
+                                {% else %}
+                                      <input type="button" id="test-expired-button-1" value="InActive">
+                                {% endif %}
+                              </div>
+                          </div>
+                      
+                      {% else %}
+
+                          <div class="test-details-content">
+                              <div class="test-details-content-1">
+                                  <h3>{{ test.test_name }}</h3>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/expire_in.png' %}">
+                                  <p> Validity : {{ test.testseries.validity }} Days </p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/question-mark.png' %}">
+                                  <p>Total Question : {{ test.total_question }}</p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/duration.png' %}">
+                                  <p>Duration : {{ test.duration }} Minutes</p>
+                              </div>
+                              <div class="test-details-content-2">
+                                  <img src="{% static 'assets/img/total_marks.png' %}">
+                                  <p>Total Marks : {{ test.total_marks }}</p>
+                              </div>
+                              <div class="test-details-content-button">
+                                {% if test.status == 1 %}
+                                <a href="http://turingcode.in/test-series" target="_blank">
+                                  <input type="button" id="test-start-button-1" value="Start">
+                                </a>
+                            {% else %}
+                                  <input type="button" id="test-expired-button-1" value="InActive">
+                            {% endif %}
+                              </div>
+                          </div>                        
+                      {% endif %}
+                  {% endfor %}
+                  </div>
+                  <!-- Unattempted Test end here-->
+                </div>
+              </div>
+            </div>
+
+            <div class="testseries-header">
+              <h3>About Test Series</h3>
+            </div>
+            <div class="about-testseries">
+              {% autoescape off %}
+                {{ About }}
+              {% endautoescape %}
+                
+            </div>
+        {% include 'footer.html' %}
+
+        <!-- Mobile menu-->
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "280px";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+       
+    </body>
+</html>

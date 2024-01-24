@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: left;
+        }
+
+        .logo img {
+            max-width: 150px;
+        }
+
+        .turing-code {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .turing-code h2{
+            color:#ff4c4c;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 30px;
+            font-weight: 500;
+        }
+        .otp-verify-content {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+        .otp-verify-content p{
+            font-family: Arial, Helvetica, sans-serif; 
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 32px; 
+            margin: 0 0 24px;
+            color:#333;
+        }
+
+        .social-links {
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .social-links img {
+            max-width: 30px;
+        }
+        #üsername{
+            color:#ff4c4c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://drive.google.com/uc?export=view&id=1kmUiIDzKnFVhCr_HujL2q3HaHQAKjeUo" alt="Logo">
+        </div>
+
+        <div class="turing-code">
+            <h2>Turing Code</h2>
+        </div>
+
+        <div class="otp-verify-content">
+            <p id="üsername">Dear {{StudentName|title}},</p>
+
+            {% if email_type == 'UGCNET'%}
+
+                <p>Thank you for choosing Turing Code UGC NET/JRF Rank Predictor! To ensure the security of your account and activate 
+                    the UGC NET/JRF Rank Predictor feature, we need to verify your email address.</p>
+                <p><strong>One-Time Password (OTP): {{otp}}</strong></p>
+                <p>Please use the following OTP to complete your email verification process. If you did not initiate this request, please disregard this email.</p>
+                <p><strong>Note: </strong>The OTP is valid for a limited time.</p>
+                <p><strong>Your UGC NET/JRF Rank Predictor Features:</strong><br>
+                    Predict your UGC NET/JRF exam rank.<br>
+                    Receive personalized insights based on your performance.<br>
+                    Access historical data for better exam preparation. </p>
+                <p>We're excited to have you on board! If you encounter any issues during
+                     the verification process or have questions, feel free to contact our support team at +91 9116407264. </p>
+                    
+                <p>Thank you for choosing Turing Code for your UGC NET/JRF rank prediction. We wish you the best in your exam preparation!</p>
+
+            {% else %}
+
+                <p>Thank you for choosing Turing Code GATE Rank Predictor! To ensure the security of your account and activate 
+                    the GATE Rank Predictor feature, we need to verify your email address.</p>
+                <p><strong>One-Time Password (OTP): {{otp}}</strong></p>
+                <p>Please use the following OTP to complete your email verification process. If you did not initiate this request, please disregard this email.</p>
+                <p><strong>Note: </strong>The OTP is valid for a limited time.</p>
+                <p><strong>Your GATE Rank Predictor Features:</strong><br>
+                    Predict your GATE exam rank.<br>
+                    Receive personalized insights based on your performance.<br>
+                    Access historical data for better exam preparation. </p>
+                <p>We're excited to have you on board! If you encounter any issues during
+                    the verification process or have questions, feel free to contact our support team at +91 9116407264. </p>
+                    
+                <p>Thank you for choosing Turing Code for your GATE rank prediction. We wish you the best in your exam preparation!</p>
+
+
+            {% endif %}
+
+            <p>Best regards, </p>
+            Turing Code Team<br>
+            www.turingcode.in<br>
+            +91 9116407264 <br>
+            contact@turingcode.in</p>
+        </div>
+
+        <div class="social-links">
+            <a href="https://www.facebook.com/" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Facebook_Logo_2023.png/600px-Facebook_Logo_2023.png" alt="Facebook">
+            </a>
+            <a href="https://twitter.com/" target="_blank">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV82YKSZryiX92m5eyU_H4xk3bs8dJXn9TqPD4HcXKGFp0uKvVcYJYbnYH7VgGU8cVojc&usqp=CAU" alt="Twitter">
+            </a>
+            <a href="https://www.youtube.com/" target="_blank">
+                <img src="https://img.freepik.com/premium-vector/youtube-logo-circle-red-social-media-logo_197792-4982.jpg?size=338&ext=jpg&ga=GA1.1.632798143.1705363200&semt=ais" alt="YouTube">
+            </a>
+        </div>
+    </div>
+</body>
+</body>
+</html>
+
+

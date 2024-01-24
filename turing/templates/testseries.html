@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-1.css' %}" type="text/css" media="all">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="{% static 'assets/js/script.js' %}"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- if page is minimize then redirect to other page -->
+        <script>
+            // Function to handle page visibility change
+            function handleVisibilityChange() {
+                if (document.visibilityState === 'hidden') {
+                    // Page is minimized or hidden, redirect to another page
+                    window.location.href = '/test-error/';
+                }
+            }
+    
+            // Attach the visibilitychange event listener to the document
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+        </script>
+
+    </head>
+    <body>
+
+        
+           {% include 'test-content.html' %}
+       
+
+    <script src="{% static 'assets/js/script-1.js' %}" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {% csrf_token %}
+<script>
+            let timerInterval; // to store the interval reference
+            let startTime = Date.now();
+            let durationInSeconds = {{Time}}; // 1 hour
+            let elapsedTimeInSeconds = 0;
+    
+            function startCountdown() {
+                // Update the timer on the frontend every second
+                timerInterval = setInterval(updateTimer, 1000);
+    
+                function updateTimer() {
+                    let currentTime = Date.now();
+                    let elapsedTime = currentTime - startTime;
+                    elapsedTimeInSeconds = Math.floor(elapsedTime / 1000);
+    
+                    if (elapsedTimeInSeconds >= durationInSeconds) {
+                        clearInterval(timerInterval);
+                        saveElapsedTimeToDatabase(elapsedTimeInSeconds);
+                        window.location.href = 'test-submit/';
+                    } else {
+                        let remainingTimeInSeconds = durationInSeconds - elapsedTimeInSeconds;
+                        let hours = Math.floor(remainingTimeInSeconds / 3600);
+                        let minutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
+                        let seconds = remainingTimeInSeconds % 60;
+    
+                        // Display the time in HH:MM:SS format
+                        document.getElementById('timer').textContent = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+                        document.getElementById('timer-1').textContent = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+                        // Save the elapsed time to the database every 5 seconds
+                        if (elapsedTimeInSeconds % 2 === 0) {
+                            saveElapsedTimeToDatabase(elapsedTimeInSeconds);
+                        }
+                    }
+                }
+            }
+    
+            function saveElapsedTimeToDatabase(elapsedTimeInSeconds) {
+                // Get the CSRF token from the cookie
+                const csrfToken = getCookie('csrftoken');
+    
+                // Send an HTTP POST request to save the elapsed time in seconds to the backend
+                const data = { elapsed_time: elapsedTimeInSeconds };
+    
+                fetch('/api/save-elapsed-time/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Elapsed time saved in the database:', data);
+                })
+                .catch(error => {
+                    console.error('Error saving elapsed time in the database:', error);
+                });
+            }
+    
+            // Function to get CSRF token from the cookie
+            function getCookie(name) {
+                const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+                return cookieValue ? cookieValue[2] : null;
+            }
+    
+            // Start the countdown timer
+            startCountdown();
+</script>
+
+<script src="{% static 'assets/js/script-3.js' %}" async defer></script>
+
+
+    </body>
+</html>

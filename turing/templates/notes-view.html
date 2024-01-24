@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+        
+        <div class="content">
+
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2> {{ notes.subject_name }} / {{ notes.title }} </h2>
+                </div>
+
+                <div class="notes-view">
+                    <iframe src="{{ notes.file_name.url }}" id="notes-embed"></iframe>
+                </div>
+
+                <div class="notes-content-2">
+
+                    <div class="notes-content-2-header">
+                        <h2>Notes List</h2>
+                    </div>
+                    {% for x in notes_list %}
+                        <a href="
+                            {% if 'Not Enroll' in enroll %}
+                                {% if x.premium == 0 %}
+                                    http://turingcode.in/courses/course-details/{{courses.slug}}/notes-view/{{ x.slug }}
+                                {% else %} 
+                                {% endif %}
+                            {% else %}
+                                    http://turingcode.in/courses/course-details/{{courses.slug}}/notes-view/{{ x.slug }}
+                            {% endif %}
+                        ">
+                            <div class="notes-content-2-inner">
+                            <img src="{% static 'assets/img/homework.png' %}">
+                            <p>{{ forloop.counter }}. {{ x.title }}</p>
+                            {% if 'Not Enroll' in enroll %}
+                                {% if x.premium == 0 %}
+                                    <input type="button" id="video-content-2-inner-button" value="Demo">
+                                {% else %}
+                                    <i class="fa fa-lock"></i>
+                                {% endif %}
+                            {% else %}
+                            <i class="fa fa-unlock"></i>
+                            {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,151 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+
+        
+        <div class="content">
+
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2>{{ TestName }}</h2>
+                </div>
+
+                <div class="test-question-anlysis">
+                <div class="test-question-anlysis-content">
+                    
+                    <div class="test-question-anlysis-content-1">
+                        <a href="http://turingcode.in/test-series/test-series-details/test-comparison-report/{{ testseries_slug }}/{{test_slug}}">
+                            <input type="button" id="question-analysis-button" value="Comparison">
+                        </a>
+                        <a href="http://turingcode.in/test-series/test-series-details/test-comparison-report/solutions/{{ testseries_slug }}/{{test_slug}}">
+                            <input type="button" id="question-view-solution-button" value="View Solution">
+                        </a>
+                    </div>
+                    <div class="test-question-anlysis-content-2">
+                        <table id="question-table">
+                            <tr>
+                                <th>Q. No.</th>
+                                <th>Response</th>
+                                <th>Time Spend</th>
+                                <th>Your Ans</th>
+                                <th>Correct Ans</th>
+                                <th> Status </th>
+                                <th>Q. Type </th>
+                            </tr>
+                            {% for x in StudentAnswer %}
+                                <tr>
+                                    <td> {{ x.question_no }} </td>
+
+                                    <td> 
+                                        <!-- check answer is correct or not -->
+                                        {% if x.answer != 'e'%}
+                                            {% if x.answer_result == 'Correct' %}
+                                                <img src="{% static 'assets/img/check(1).png' %}">
+                                            {% else %}
+                                                <img src="{% static 'assets/img/wrong-answer.png' %}"> 
+                                            {% endif %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/not-attempt.png' %}"> 
+                                        {% endif %}
+                                    </td>
+
+                                    <td> <input type="button" id="question-analysis-question-time-button" value="🕑 {{ x.time_taken|format_seconds }}"> </td>
+                                    
+                                    <td> {% if x.answer == 'e' %}
+
+                                            {% else %}
+                                                {% if x.question.question_type == 'NAT'%}
+                                                    {{ x.answer|floatformat:x.question.nat_round_decimal_digit }}
+                                                {% else %}
+                                                    {% if x.question.question_type == 'MSQ'%}
+                                                        {{ x.answer|join:"," }}
+                                                    {%else %}
+                                                        {{ x.answer }}
+                                                    {% endif %}
+                                                
+                                                {% endif %}
+                                             {% endif %} 
+                                    </td>
+
+                                    <td> {% for info in x.question.question_answer_set.all %}
+                                            {% if forloop.counter >= 2 %}
+                                                {% if x.question.nat_range %}
+                                                    to
+                                                {% else %}
+                                                    or
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if x.question.question_type == 'MSQ' %}
+                                                {{ info.answer|join:"," }}
+                                            {% else %}
+                                            {{ info.answer }}
+                                            {% endif %}
+                                         {% endfor %} 
+                                    </td>
+
+                                    <td>
+                                        {% if x.answer == 'e' %}
+                                            <input type="button" id="question-analysis-notanswered-solution-button"  value="Not Answered">
+                                        {% else %}
+                                            <input type="button" id="question-analysis-answered-solution-button"  value="Answered">
+                                        {% endif %}
+                                    </td>
+
+
+                                    <td>{{ x.question.question_type }}</td>
+                                    
+                                </tr>
+                            {% endfor %}
+
+
+                        </table>
+                    </div>
+
+                </div>
+                </div>
+
+            </div>
+        </div>
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

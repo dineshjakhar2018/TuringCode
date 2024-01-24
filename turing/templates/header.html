@@ -1,0 +1,35 @@
+{% load static %}
+<div class="header">
+            <div class="mob-menu">
+                <span id="menu-icon" onclick="openNav()">&#9776;</span>
+            </div>
+
+            <div class="logo">
+                <img src="{% static 'assets/img/logo.png' %}">
+            </div>
+
+            <!--Mobile menu-->
+            <div id="mySidenav" class="sidenav">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="{% url 'index' %}" id="active">Home</a>
+                <a href="">Whatsapp Channel</a>
+                <a href="{% url 'about_us' %}">About Us</a>
+                <a href="{% url 'contact_us' %}">Contact Us</a>
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+                <img id="menu-logo" src="{% static 'assets/img/logo.png' %}">
+            </div>
+
+
+            <div class="menu">
+                <ul id="menu">
+                    <li> <a href="{% url 'index' %}">  Home </a> </li>
+                    <li> <a href="">Whatsapp Channel</a> </li>
+                    <li> <a href="{% url 'about_us' %}">  About Us </a> </li>
+                    <li> <a href="{% url 'contact_us' %}">  Contact Us </a> </li>
+                    <li> <a href="{% url 'login' %}">  Login </a> </li>
+                    <li> <a href="{% url 'register' %}">  Register </a> </li>
+                </ul>
+            </div>
+            
+        </div>

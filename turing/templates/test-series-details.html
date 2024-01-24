@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script>
+            function openInPrivateTab(url) {
+                window.open(url, '_blank', 'private');
+            }
+        </script>
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+        
+        <div class="content">
+
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2>Test Series / {{ testseries.title }}</h2>
+                </div>
+
+                <div class="course-detail-content">
+                    <div class="course-detail-content-1">
+                        <img src="{{ testseries.poster.url}}">
+                        <h2>{{ testseries.title }}</h2>
+                        <div class="course-detail-content-1-inner">
+                            <div class="course-details-content-1-inner-left">
+
+                                {% if 'Not Enroll' in enroll %}
+                                    <p>  🕑 Validity : {{ testseries.validity }} Days </p>
+                                {% else %}
+                                    <p> 🕑 {% if enroll.1 < 0 %} Expired {% else %}Expire in : {{ enroll.1 }} Days {% endif %} </p>
+                                {% endif  %}
+
+                                <h3> &#8377; {{ testseries.price}} <span id="course-total-price"> &#8377; {{ testseries.total_price }} </span></h3>
+                            </div>
+                            
+                            <div class="course-details-content-1-inner-right">
+                                {% if 'Not Enroll' in enroll %}
+                                    <!--<input type="button" id="course-expire-button" value="Download Details">-->
+                                    <a href="{% url 'checkout' 'test-series' testseries.slug %}"><input type="button" id="course-checkout-button" value="Enroll Now"></a>
+                                {% else %}
+                                    {% if enroll.1 < 0 %}
+                                        <input type="button" id="course-checkout-button-red" value="Expired">
+                                    {% else %}
+                                        <!--<input type="button" id="course-expire-button" value="Download Details">-->
+                                        <input type="button" id="course-checkout-button-green" value="Enrolled">
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attempted Test start here -->
+                    <div class="test-details">
+                        {% for test in TestStatus %}
+                            {% if forloop.counter|divisibleby:2 %}
+                                <div style=""class="test-details-content">
+                                    <div style="" id="test-special" class="test-details-content-1">
+                                        <h3>{{ test.test.test_name }}</h3>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/expire_in.png' %}">
+                                        <p>
+                                            {% if 'Not Enroll' in enroll %}
+                                                 Validity : {{ testseries.validity }} Days 
+                                            {% else %}
+                                                {% if enroll.1 < 0 %} Expired {% else %} Expire in : {{ enroll.1 }} Days {% endif %} 
+                                            {% endif  %}
+                                         </p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/question-mark.png' %}">
+                                        <p>Total Question : {{ test.test.total_question }}</p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/duration.png' %}">
+                                        <p>Duration : {{ test.test.duration }} Minutes</p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/total_marks.png' %}">
+                                        <p>Total Marks : {{ test.test.total_marks }}</p>
+                                    </div>
+                                    <div class="test-details-content-button">
+                                        {% if test.completed == 0 %}
+                                            <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                                    <input type="button" id="test-incomplete-button-1" value="Incomplete">
+                                            </a>
+                                        {% else %}
+                                        <a href="test-comparison-report/{{testseries.slug}}/{{test.test.slug}}">
+                                            <input type="button" id="test-view-report-button-1" value="View Report">
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            
+                            {% else %}
+    
+                                <div class="test-details-content">
+                                    <div class="test-details-content-1">
+                                        <h3>{{ test.test.test_name }}</h3>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/expire_in.png' %}">
+                                        <p>
+                                            {% if 'Not Enroll' in enroll %}
+                                                 Validity : {{ testseries.validity }} Days 
+                                            {% else %}
+                                                {% if enroll.1 < 0 %} Expired {% else %} Expire in : {{ enroll.1 }} Days {% endif %} 
+                                            {% endif  %}
+                                         </p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/question-mark.png' %}">
+                                        <p>Total Question : {{ test.test.total_question }}</p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/duration.png' %}">
+                                        <p>Duration : {{ test.test.duration }} Minutes</p>
+                                    </div>
+                                    <div class="test-details-content-2">
+                                        <img src="{% static 'assets/img/total_marks.png' %}">
+                                        <p>Total Marks : {{ test.test.total_marks }}</p>
+                                    </div>
+                                    <div class="test-details-content-button">
+                                        {% if test.completed == 0 %}
+                                            <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                                    <input type="button" id="test-incomplete-button-1" value="Incomplete">
+                                            </a>
+                                        {% else %}
+                                        <a href="test-comparison-report/{{testseries.slug}}/{{test.test.slug}}">
+                                            <input type="button" id="test-view-report-button-1" value="View Report">
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>                        
+                            {% endif %}
+                        {% endfor %}
+                        <!-- Attempted Test end here-->
+
+                    <!-- UnAttempted Test start here -->
+                    {% for test in UnAttemptedTest %}
+                        {% if forloop.counter|divisibleby:2 %}
+                            <div class="test-details-content">
+                                <div id="test-special" class="test-details-content-1">
+                                    <h3>{{ test.test_name }}</h3>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/expire_in.png' %}">
+                                    <p>
+                                        {% if 'Not Enroll' in enroll %}
+                                             Validity : {{ testseries.validity }} Days 
+                                        {% else %}
+                                            {% if enroll.1 < 0 %} Expired {% else %} Expire in : {{ enroll.1 }} Days {% endif %} 
+                                        {% endif  %}
+                                     </p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/question-mark.png' %}">
+                                    <p>Total Question : {{ test.total_question }}</p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/duration.png' %}">
+                                    <p>Duration : {{ test.duration }} Minutes</p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/total_marks.png' %}">
+                                    <p>Total Marks : {{ test.total_marks }}</p>
+                                </div>
+                                <div class="test-details-content-button">
+                                    {% if 'Not Enroll' in enroll %}
+                                        {% if test.premium == 0 %}
+                                            <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                                <input type="button" id="test-start-button-1" value="Start">
+                                            </a>
+                                        {% else %}
+                                        <input type="button" id="test-start-button-1" value="Start">
+                                        {% endif %}
+                                    {% else %}
+                                        {% if enroll.1 >= 0 %}
+                                        <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                            <input type="button" id="test-start-button-1" value="Start">
+                                        </a>
+                                        {% else %}
+                                            <input type="button" id="test-expired-button-1" value="Expired">
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        
+                        {% else %}
+
+                            <div class="test-details-content">
+                                <div class="test-details-content-1">
+                                    <h3>{{ test.test_name }}</h3>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/expire_in.png' %}">
+                                    <p>
+                                        {% if 'Not Enroll' in enroll %}
+                                             Validity : {{ testseries.validity }} Days 
+                                        {% else %}
+                                            {% if enroll.1 < 0 %} Expired {% else %} Expire in : {{ enroll.1 }} Days {% endif %} 
+                                        {% endif  %}
+                                     </p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/duration.png' %}">
+                                    <p>Total Question : {{ test.total_question }}</p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/question-mark.png' %}">
+                                    <p>Duration : {{ test.duration }} Minutes</p>
+                                </div>
+                                <div class="test-details-content-2">
+                                    <img src="{% static 'assets/img/total_marks.png' %}">
+                                    <p>Total Marks : {{ test.total_marks }}</p>
+                                </div>
+                                <div class="test-details-content-button">
+                                    {% if 'Not Enroll' in enroll %}
+                                        {% if test.premium == 0 %}
+                                            <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                                <input type="button" id="test-start-button-1" value="Start">
+                                            </a>
+                                        {% else %}
+                                        <input type="button" id="test-start-button-1" value="Start">
+                                        {% endif %}
+                                    {% else %}
+                                        {% if enroll.1 >= 0 %}
+                                            <a href="http://127.0.0.1:8000/test-instruction-1/{{testseries.exam}}/{{test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
+                                                <input type="button" id="test-start-button-1" value="Start">
+                                            </a>
+                                        {% else %}
+                                            <input type="button" id="test-expired-button-1" value="Expired">
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>                        
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                    <!-- Unattempted Test end here-->
+                    
+
+                    <div class="course-detail-content-3">
+                        <h2>About Test Series</h2>
+                        <div class="about-course-content">
+                            {% autoescape off %}
+                                {{ testseries.about }}
+                            {% endautoescape %}
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+            
+            for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                  content.style.maxHeight = null;
+                } else {
+                  content.style.maxHeight = content.scrollHeight + "px";
+                } 
+              });
+            }
+        </script>
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

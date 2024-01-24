@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+          <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+      </div>
+      <!--loader code end here-->
+
+        <div class="content">
+
+           <!-- include menu.html file-->
+           {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2> {{ exam.exam_for }} </h2>
+                </div>
+
+                
+                <div class="course-detail-content-2">
+                    <h2></h2>
+                    <div class="course-detail-content-2-inner">
+
+                        {% for x in subjects %}
+                            <div {% if forloop.first %}id="list-top-content" {% endif %} class="collapsible"><h4>{{ forloop.counter }}. {{ x }} </h4></div>
+                            <div  class="list-content">
+                                {% for y in notes %}
+                                    {% if y.subject_name == x %}
+                                            <a href="{{ exam.slug }}/notes-view-1/{{ y.slug }}">
+                                                <div class="list-inner-content">
+                                                    <img src="{% static 'assets/img/note.png' %}">
+                                                    <p>{{ y.title }}</p>
+                                                </div>
+                                            </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+        
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+            
+            for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                  content.style.maxHeight = null;
+                } else {
+                  content.style.maxHeight = content.scrollHeight + "px";
+                } 
+              });
+            }
+        </script>
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+        <script>
+          // Wait for the page to load
+          window.addEventListener('load', function () {
+              // Hide the loading overlay once the page has loaded
+              const loadingOverlay = document.querySelector('.loading-overlay');
+              loadingOverlay.style.display = 'none';
+          });
+      </script>
+    </body>
+</html>

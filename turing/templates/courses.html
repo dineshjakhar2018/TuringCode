@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+        <div class="content">
+            
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2>Courses</h2>
+                </div>
+
+                <div class="page-content">
+
+                    <div class="course">
+                        {% for item in enroll_courses %}
+                                <div {% if item.remaning_days < 0 %} id="course-expire" {% endif %} class="course-content">
+                                    <img src="{{ item.course.poster.url }}">
+                                    <h2 id="course-name"> {{ item.course.name }} </h2>
+                                    <p>  🕑 {% if item.remaning_days > 0 %}Expire in : {{ item.remaning_days }} Days {% else %} Expired {% endif %} </p>
+                                    <h3> &#8377; {{ item.course.price }} <span id="course-total-price"> &#8377; {{ item.course.total_price }}</span></h3>
+                                    <div class="course-button">
+                                        {% if item.remaning_days > 0 %}
+                                            <a href="invoice/course/{{ item.course.slug }}"><input type="button" id="course-demo-button" value="Invoice"></a>
+                                            <a href="course-details/{{ item.course.slug }}"><input type="button" id="course-enroll-button" value="View Course"></a>
+                                        {% else %}
+                                            <img id="expire-image" src="{% static 'assets/img/expire.jpg' %}">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                        {% endfor %}
+                    
+
+                        {% for item in not_enrolled_courses %}
+                                <div class="course-content">
+                                    <img src="{{ item.poster.url }}">
+                                    <h2 id="course-name"> {{ item.name }} </h2>
+                                    <p>  🕑 Validity : {{ item.validity }} Days </p>
+                                    <h3> &#8377; {{ item.price }} <span id="course-total-price"> &#8377; {{ item.total_price }}</span></h3>
+                                    <div class="course-button">
+                                        <a href="course-details/{{ item.slug }}"><input type="button" id="course-demo-button" value="Demo"></a>
+                                        <a href="course-details/checkout/course/{{ item.slug }}"><input type="button" id="course-enroll-button" value="Enroll Now"></a>
+                                    </div>
+                                </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

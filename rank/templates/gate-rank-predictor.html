@@ -1,0 +1,313 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Turing Code - GATE 2024 Rank Predictor</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/rank-style-1.css'%}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+       
+        <div class="content">
+            <div class="logo">
+                <img src="{% static "assets/img/logo.png" %}">
+            </div>
+
+            <div class="exam-name-heading">
+                <h3> Predict Your GATE 2024 Rank  </h3>
+            </div>
+
+            <div class="exam-name-heading">
+                <h4> Decoding Success: Your Rank, Our Precision. </h4>
+            </div>
+
+                <div class="textbox">
+                    <form id="myForm" method="post" onsubmit="return validateForm()">
+                        {% csrf_token %}
+                        <div class="textbox-1">
+                            <input type="email" id="email" value="" placeholder="Enter Your Email ID" name="email" required>
+                            <input type="text" id="name" value="" placeholder="Name" name="name" required>
+                        </div>
+                        <!--
+                        <div class="textbox-1">
+                            <select id="category" name="category" required>
+                                <option value="Select Category"> Select Category </option>
+                                <option value="UNRESERVED"> UNRESERVED </option>
+                                <option value="EWS"> EWS </option>
+                                <option value="OBC(NCL)"> OBC(NCL) </option>
+                                <option value="SC"> SC </option>
+                                <option value="ST"> ST </option>
+                                <option value="PWD"> PWD </option>
+                            </select>
+                            <input type="text" id="mobile" value="" placeholder="Mobile Number" name="mobile" required>
+                        </div>
+                        -->
+                        <div class="textbox-2">
+                            <select id="subject" name="subject" required onchange="showHideShift()">
+                                <option value="Select Subject"> Select Subject </option>
+                                <option value="Computer Science & Information Technology"> Computer Science  </option>
+                                <option value="Data Science and Artificial Intelligence"> Data Science and Artificial Intelligence </option>
+                            </select>
+                        
+                            <select id="shift" name="shift" required style="display: none;">
+                                <option value="Select Shift"> Select Shift </option>
+                                <option value="Morning"> Morning </option>
+                                <option value="Afternoon"> Afternoon </option>
+                            </select>
+
+                        </div>
+
+                        <div class="textbox-1">
+                            <textarea id="textarea" placeholder="Paste Your Response Sheet." name="response"></textarea>
+                        </div>
+
+                        <div class="textbox-1">
+                            <input type="submit" id="submit-button" value="Submit">
+                        </div>
+                    </form>
+            </div>
+        </div>
+            <div class="detail-video-faq">
+                <div class="detail-video">
+                    <h3> How to use GATE 2024 rank predictor. </h3>
+                    <iframe id="video-iframe" src="https://www.youtube.com/embed/6A6jV8UEWas" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <div class="detail-faq">
+                    
+                    <h2 id="faq-heading">GATE 2024 Rank Predictor FAQ</h2>
+
+                    <div class="faq-container">
+
+                        <div class="faq-question" onclick="toggleFAQ('answer1')">
+                            <label>Q: How does the UGC NET rank predictor work?</label>
+                            <div class="icon" id="icon1">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer1">
+                            <p>The UGC NET rank predictor uses a predictive algorithm based on historical data and trends to estimate your rank
+                                based on your performance in the mock tests and other relevant parameters.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label>Q: Can I trust the predicted rank?</label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>The predicted rank is an estimate and should be taken as a reference. Actual exam results may vary, and the
+                                predictor aims to provide a rough idea based on available data.</p>
+                        </div>
+
+                        <!-- Add more FAQ items as needed -->
+
+                    </div>
+
+                </div>
+            </div>
+        
+
+<!-- Email Verification Modal -->
+<div id="emailVerifyModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Email Verification</h2>
+        <p>Enter the OTP sent to your email:</p>
+        <input type="text" placeholder="OTP" id="otp" name="otp" required>
+        <button id="otp-verify-button"  onclick="verifyEmailOTP()">Verify</button>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        var email = document.getElementById('email').value;
+        //var mobile = document.getElementById('mobile').value;
+        //var category = document.getElementById('category').value;
+        var textarea = document.getElementById('textarea').value;
+        var subject = document.getElementById('subject').value;
+        var shift = document.getElementById('shift').value;
+        var name = document.getElementById('name').value;
+
+        //name validation
+        if (name === '') {
+            alert('Please enter ýour name.');
+            return false;
+        }
+        else if (!/^[A-Za-z ]+$/.test(name)) {
+            // Check if the name contains only letters
+            alert('Name should contain only alphabetical characters.');
+            return false;
+        }
+            
+        
+        // Email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return false;
+        }
+        
+        /*
+        // Mobile validation
+        var mobileRegex = /^[0-9]{10}$/;
+        if (!mobileRegex.test(mobile)) {
+            alert('Please enter a valid 10-digit mobile number.');
+            return false;
+        }
+    
+        // Category validation
+        if (category === 'Select Category') {
+            alert('Please select a category.');
+            return false;
+        }*/
+
+        // subject validation
+        if (subject === 'Select Subject') {
+            alert('Please select a subject.');
+            return false;
+        }
+
+        if(subject === 'Computer Science & Information Technology'){
+            // shift validation
+            if (shift === 'Select Shift') {
+                alert('Please select a shift.');
+                return false;
+            }
+        }
+        
+        // response validation
+        if (textarea === '') {
+            alert('Paste Your Response Sheet.');
+            return false;
+        }
+    
+        SubmitForm();
+        return false; // Prevent form submission
+    }
+    
+   
+    function closeModal() {
+        document.getElementById('emailVerifyModal').style.display = 'none';
+    }
+
+    //save the form data in db
+    function SubmitForm() {
+        // Get the CSRF token from the cookie
+        $.ajax({
+            type: 'POST',
+            url: '/gate-student-response/',
+            data: {
+                'name': $("input[name='name']").val(),
+                'email': $("input[name='email']").val(),
+                //'mobile': $("input[name='mobile']").val(),
+                //'category': $("select[name='category']").val(),
+                'response': document.getElementById('textarea').value,
+                //'examname': 'GATE 2024',
+                'subject': $("select[name='subject']").val(),
+                'shift': $("select[name='shift']").val(),
+                'csrfmiddlewaretoken': getCookie('csrftoken')
+            },
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                if(data.status === 'success'){
+                    document.getElementById('emailVerifyModal').style.display = 'block';
+                }
+                
+                if(data.status === 'error'){
+                    if(data.response-error){
+                        alert(data.response-error);
+                    }
+                    else{
+                        alert('Something went wrong, please try again');
+                    }
+                }
+            },
+                    
+            error: function() {
+                alert('Something went wrong, please try again');
+                
+            }
+        });
+    }
+
+    
+    function verifyEmailOTP() {
+        var otp = document.getElementById('otp').value;
+        // Send the OTP to the server for verification
+        $.ajax({
+            type: 'POST',
+            url: '/gate-verify-email-otp/',
+            data: {
+                'otp': otp,
+                'csrfmiddlewaretoken': getCookie('csrftoken')
+            },
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                if(data.error){
+                    alert(data.error);
+                }
+                if(data.status === 'success'){
+                    window.location.href = '{% url "gate_response" %}';   
+                }
+            },
+            error: function(data) {
+                alert(data.error);
+            }
+        });
+    }
+    // Helper function to get the CSRF token from cookies
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if the cookie name matches the CSRF cookie name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+
+    function toggleFAQ(answerId) {
+        var selectedAnswer = document.getElementById(answerId);
+        var selectedIcon = document.getElementById('icon' + answerId.charAt(answerId.length - 1));
+
+        if (selectedAnswer.style.display === 'none' || selectedAnswer.style.display === '') {
+            selectedAnswer.style.display = 'block';
+            selectedIcon.textContent = '-';
+        } else {
+            selectedAnswer.style.display = 'none';
+            selectedIcon.textContent = '+';
+        }
+    }
+
+
+    function showHideShift() {
+        var subjectSelect = document.getElementById("subject");
+        var shiftSelect = document.getElementById("shift");
+
+        // Check if "Computer Science & Information Technology" is selected
+        if (subjectSelect.value === "Computer Science & Information Technology") {
+            shiftSelect.style.display = "block"; // Show the shift select
+        } else {
+            shiftSelect.style.display = "none"; // Hide the shift select
+        }
+    }
+</script>
+
+    </body>
+</html>

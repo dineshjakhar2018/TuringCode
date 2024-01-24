@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+        <script src="{% static 'assets/js/script.js'%}"></script>
+    </head>
+    <body>
+        <div class="content">
+            <div class="content-box">
+                <div class="log-logo">
+                    <img src="{% static 'assets/img/logo.png' %}">
+                </div>
+                <div class="log-textbox-top">
+                    <h3>Otp</h3>
+                </div>
+                <form action="{% url 'email-verify' %}" method="post">
+                    {% csrf_token %}
+                    <div class="log-textbox-bottom">
+                        <div class="log-textbox-bottom-left"><i class="fa fa-lock"></i></div>
+                        <div class="log-textbox-bottom-right">
+                            <input type="password" id="passwordInput" placeholder="Enter Otp" name="Otp" maxlength="6" required>
+                        </div>
+                        <div class="password-show">
+                            <div id="showPasswordButton" onclick="togglePasswordVisibility()">
+                                <i id="passwordIcon" class="fas fa-eye-slash"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="log-textbox-top">
+                        <h4><a id="resendLink" href="{% url 'otp-resend' %}"> Resend Otp </a></h4>
+                        <h4 id="timer" style="display: none;"></h4>
+                    </div>
+
+
+                    <div class="log-button">
+                        <input type="submit" id="log-button" value="Submit">
+                    </div>
+                </form>
+                <div class="log-textbox-top">
+                    <h5><a href="{% url 'login' %}"> Cancel </a></h5>
+                </div>
+                <div class="log-error">
+                    <p id="error">
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </p> 
+                </div>
+            </div>
+        </div>
+        <script>
+            function updateTimer() {
+                var timerElement = document.getElementById("timer");
+                var remainingSeconds = parseInt(localStorage.getItem("otpTimer") || 10);
+    
+                if (remainingSeconds > 0) {
+                    timerElement.innerText = "Resend Otp in "+ remainingSeconds + " seconds";
+                    timerElement.style.display = "inline"; // Show the timer element
+                    document.getElementById("resendLink").style.display = "none"; // Hide the resend link
+                    localStorage.setItem("otpTimer", remainingSeconds - 1);
+                    setTimeout(updateTimer, 1000);
+                } else {
+                    // Timer expired, hide the timer element, and show the resend link
+                    timerElement.style.display = "none";
+                    document.getElementById("resendLink").style.display = "inline";
+                }
+            }
+    
+            // Function to handle the click on the "Resend OTP" link
+            function resendOTP() {
+                // Your logic to resend the OTP goes here
+    
+                // Reset the timer to the initial value (e.g., 60 seconds)
+                localStorage.setItem("otpTimer", 60);
+    
+                // Start the timer
+                updateTimer();
+            }
+    
+            // Attach the click event handler to the "Resend OTP" link
+            document.getElementById("resendLink").addEventListener("click", resendOTP);
+    
+            // Check if the timer has already started (after page refresh)
+            var remainingSeconds = parseInt(localStorage.getItem("otpTimer") || 60);
+            if (remainingSeconds > 0) {
+                updateTimer();
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code</title>
+        <meta name="description" content="">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="{% static 'assets/css/style-2.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+        <!--loader code -->
+        <div class="loading-overlay">
+            <img src="{% static 'assets/img/refresh.png' %}" alt="Loading Icon">
+        </div>
+        <!--loader code end here-->
+
+        <div class="content">
+            
+            <!-- include menu.html file-->
+            {% include 'menu.html' %}
+
+            <div class="content-container">
+                <div class="content-container-header">
+                    <img src="{% static 'assets/img/right-arrow.png' %}"><h2>Profile</h2>
+                </div>
+
+                <div class="profile">
+                    <div class="profile-container">
+                        <div class="profile-content">
+                            <div class="profile-content-top">
+                                <div class="profile-picture">
+                                    {% if student_info.profile_pic %}
+                                        <img src="{{ student_info.profile_pic.url }}">
+                                    {% else %}
+                                        <img src="{% static 'assets/img/165.png' %}">
+                                    {% endif %}
+                                    <p> {{ student.name|title}} </p>
+                                </div>
+                            </div>
+                        </div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="profile-textbox">
+                            <p>Name :</p>
+                            <input type="textbox" id="profile-textbox" placeholder="Enter your name" value="{{ student.name|title }}" name="FullName" disabled>
+                        </div>
+
+                        <div class="profile-textbox">
+                            <p>Email Address :</p>
+                            <input type="email" id="profile-textbox" placeholder="Enter email address" value="{{ student.email }}" name="Email" maxlength="50" disabled>
+                        </div>
+
+                        <div class="profile-textbox">
+                            <p>Mobile Number :</p>
+                            <input type="textbox" id="profile-textbox" placeholder="Enter mobile number" value="{{ student_info.mobile }}" name="Mobile" maxlength="10" required>
+                        </div>
+
+                        <div class="profile-textbox">
+                            <p> DOB :</p>
+                            <input type="date" id="profile-textbox" placeholder="Enter mobile number" value="{{ student_info.dob|date:'Y-m-d' }}" name="Dob" required>
+                        </div>
+                        
+                        <!--
+                        <div class="profile-textbox">
+                            <p>Gender :</p>
+                            <select id="profile-textbox" class="gender" name="Gender"  onchange="checkGender()">
+                                <option value="Select Gender">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        -->
+
+                        <div class="profile-textbox">
+                            <p>Address :</p>
+                            <input type="textbox" id="profile-textbox" placeholder="Enter your address" value="{{ student_info.address }}" name="Address" required>
+                        </div>
+
+                        <div class="profile-textbox">
+                            <p>State :</p>
+                            <input type="textbox" id="profile-textbox" placeholder="Enter your state" value="{{ student_info.state }}" name="State" required>
+                        </div>
+
+                        <div class="profile-textbox">
+                            <p>Qualification :</p>
+                            <input type="textbox" id="profile-textbox" placeholder="Enter your qualification" value="{{ student_info.qualification }}" name="Qualification" required>
+                        </div>
+                        
+                        <div class="profile-textbox">
+                            <p>Profile Picture :</p>
+                            <input type="file" id="profile-textbox" name="image" accept="image/*" required>
+                        </div>
+                        
+
+                        <div class="profile-button">
+                            <input type="submit" id="profile-save-button" value="Save">
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "75vw";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+                
+        <script>
+            // Wait for the page to load
+            window.addEventListener('load', function () {
+                // Hide the loading overlay once the page has loaded
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                loadingOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>

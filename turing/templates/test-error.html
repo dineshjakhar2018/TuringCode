@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-5.css' %}" type="text/css" media="all">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+        <div class="content">
+            <div class="content-ineer-1">
+                <div class="logo-1">
+                    <img src="{% static 'assets/img/error.png' %}">
+                </div>
+                <div class="top">
+                    <h2>An error occurred due to the following reason</h2>
+                    <h3>You attempted to minimize or toggle the window.</h3>
+                    <h3>You have attempted to take more than one test simultaneously.</h3>
+                    <h3>You have tried to refresh the page frequently</h3>
+                </div>
+                <div class="bottom">
+                    <input type="button" id="button" onclick="WindowClose()" value="Exit">
+                </div>
+            </div>
+        </div>
+        <script>
+            function WindowClose() {
+                window.close();
+            }
+        </script>
+    </body>
+</html>

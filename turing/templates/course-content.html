@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-6.css' %}" type="text/css" media="all">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <div class="about-header">
+          <h3> Course / {{ CourseName }} </h3>
+        </div>
+
+        <div class="course-contents">
+            <div class="course-detail-content">
+                <div class="course-detail-content-1">
+                    <img src="{{ courses.poster.url }}">
+                    <h2>{{ courses.name }}</h2>
+                    <div class="course-detail-content-1-inner">
+                        <div class="course-details-content-1-inner-left">
+                            
+                            <p>  🕑 Validity : {{ courses.validity }} Days </p>
+                            
+                            <h3> &#8377; {{ courses.price }} <span id="course-total-price"> &#8377; {{ courses.total_price }}</span></h3>
+                        </div>
+                        
+                        <div class="course-details-content-1-inner-right">
+                                <a href="{% url 'checkout' 'course' courses.slug %}"><input type="button" id="course-checkout-button" value="Enroll Now"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-detail-content-2">
+                    <h2>Course Content</h2>
+                    <div class="course-detail-content-2-inner">
+                        
+                        {% for x in subjects %}
+                        <div {% if forloop.first %}id="list-top-content" {% endif %} class="collapsible"><h4>{{ forloop.counter }}. {{ x }} </h4></div>
+                        <div class="list-content">
+                            {% for y in videos %}
+                                {% if x == y.subject_name %}
+                                    <a href="http://turingcode.in/courses/course-details/{{ courses.slug }}/play-video/{{ y.slug }}" target="_blank">
+                                        <div class="list-inner-content">
+                                            <img src="{% static 'assets/img/cam-recorder.png' %}">
+                                            <p>{{ y.title }}</p>
+                                                {% if y.premium == 0 %}
+                                                    <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                {% else %}
+                                                    <i class="fa fa-lock"></i>
+                                                {% endif %}
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+
+
+                            {% for z in notes %}
+                                {% if x == z.subject_name %}
+                                <a href="http://turingcode.in/courses/course-details/{{ courses.slug }}/notes-view/{{ z.slug }}" target="_blank">
+                                        <div class="list-inner-content">
+                                            <img src="{% static 'assets/img/homework.png' %}">
+                                            <p>{{ z.title }}</p>
+                                                {% if z.premium == 0 %}
+                                                    <input type="button" id="video-content-2-inner-button" value="Demo">
+                                                {% else %}
+                                                    <i class="fa fa-lock"></i>
+                                                {% endif %}
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        {% endfor %}
+                        
+
+
+
+                    </div>
+                </div>
+
+                <div class="course-detail-content-3">
+                    <h2>About Course</h2>
+                    <div class="about-course-content">
+                        {% autoescape off %}
+                            {{ courses.about }}
+                        {% endautoescape %}
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% include 'footer.html' %}
+
+        <!-- Mobile menu-->
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "280px";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+            
+            for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                  content.style.maxHeight = null;
+                } else {
+                  content.style.maxHeight = content.scrollHeight + "px";
+                } 
+              });
+            }
+        </script>
+    </body>
+</html>

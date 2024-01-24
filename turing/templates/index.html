@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Turing Code </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'assets/css/style-6.css' %}" type="text/css" media="all">
+        <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <div class="poster">
+            <img src="{{ Content.poster.url }}">
+        </div>
+
+        <div class="imp-content">
+            <a href="http://127.0.0.1:8000/rank/gate-rank-predictor/" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> GATE 2024 </h3>
+                    <p> Rank Predictor </p>
+                    <p> (Know your estimated rank) </p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/rank/ugcnet-rank-predictor/" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> UGC NET/JRF </h3>
+                    <p> Rank Predictor </p>
+                    <p> (Know your estimated rank) </p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/test-series-content/gate-computer-science-previous-year-paper-2005-202" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> GATE CS </h3>
+                    <p> Test Series PYP(2005-2023) </p>
+                    <p> (Same exam interface as GATE exam) </p>
+                </div>
+            </a>
+
+            <a href="/pyp/gate-computer-science-previous-year-paper-2005-202" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> GATE CS</h3>
+                    <p> PYP(2005-2023) </p>
+                    <p> (Video & Text Solutions) </p>
+                </div>
+            </a>
+
+            <a href="http://127.0.0.1:8000/test-series-content/gate-computer-science-previous-year-paper-2005-202" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> GATE DA </h3>
+                    <p> Test Series PYP(2024) </p>
+                    <p> (Same exam interface as GATE exam) </p>
+                </div>
+            </a>
+
+            <a href="/pyp/gate-ds-ai-previous-year-paper-2024" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> GATE DA </h3>
+                    <p> PYP (2024) </p>
+                    <p> (Video & Text Solutions) </p>
+                </div>
+            </a>
+            
+            <a href="http://127.0.0.1:8000/test-series-content/ugc-netjrf-computer-science-previous-year-paper-20" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> UGC NET/JRF </h3>
+                    <p> Test Series PYP Paper-2 (CS) </p>
+                    <p> (Same exam interface as UGC NET exam) </p>
+                </div>
+            </a>
+
+            <a href="/pyp/ugc-netjrf-computer-science-previous-year-paper-20" target="_blank">
+                <div class="imp-sub-content">
+                    <h3> UGC NET/JRF </h3>
+                    <p> PYP Paper-2 (CS) </p>
+                    <p> (Video & Text Solutions) </p>
+                </div>
+            </a>
+
+            <!--
+            <a href="#">
+                <div class="imp-sub-content">
+                    <h3> Python </h3>
+                    <p> Quiz </p>
+                    <p> + </p>
+                    <p> (Video & Text Solutions) </p>
+                </div>
+            </a>
+
+            <a href="#">
+                <div class="imp-sub-content">
+                    <h3> DSA </h3>
+                    <p> Quiz </p>
+                    <p> + </p>
+                    <p> (Video & Text Solutions) </p>
+                </div>
+            </a>
+            -->
+        </div>
+        <!--
+        <div class="top-content">
+            {% autoescape off %}
+                {{ Content.description }}
+            {% endautoescape %}
+        </div>
+        -->
+
+        <!-- Test Series content start -->
+        <div id="content-background" class="content">
+            <div class="content-header">
+                <h3 id="content-header-top"> Courses & Test Series </h3>
+            </div>            
+            <div class="course">
+
+                {% for course in Courses %}
+                    <div class="course-content">
+                        <img src="{{ course.poster.url }}">
+                        <h2 id="course-name"> {{ course.name }} </h2>
+                        <p>  🕑 Validity : {{ course.validity }} Days </p>
+                        <h4> &#8377; {{ course.price }} <span id="course-total-price"> &#8377; {{ course.total_price }}</span></h4>
+                        <div class="course-button">
+                            <a href="http://turingcode.in/course-details/{{ course.slug }}" target="_blank"> <input type="button" id="course-demo-button" value="Demo"> </a>
+                            <a href="http://turingcode.in/courses/course-details/{{ course.slug }}" target="_blank"> <input type="button" id="course-enroll-button" value="Enroll Now"> </a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for test in TestSeries %}
+                    <div class="course-content">
+                        <img src="{{ test.poster.url }}">
+                        <h2 id="course-name"> {{ test.title }} </h2>
+                        <p>  🕑 Validity : {{ test.validity }} Days </p>
+                        <h4> &#8377; {{ test.price }} <span id="course-total-price"> &#8377; {{ test.total_price }}</span></h4>
+                        <div class="course-button">
+                            <a href="http://turingcode.in/test-series-content/{{ test.slug }}" target="_blank"> <input type="button" id="course-demo-button" value="Details"> </a>
+                            <a href="http://turingcode.in/test-series/test-series-details/{{ test.slug }}" target="_blank"> <input type="button" id="course-enroll-button" value="Enroll Now"> </a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+        <!-- Test series content end -->
+
+
+        <!-- rank predictor start
+        <div class="rank-predictor">
+            <h3 id="content-header-top"> Turing Code Rank Predictor </h3>
+            <div class="rank-predictor-content">
+                <div class="rank-predictor-content-1">
+                    <img src="{% static 'assets/img/result.jpg' %}">
+                </div>
+                <div class="rank-predictor-content-2">
+                    <div class="rank-predictor-content-2-1">
+                        <img src="{% static 'assets/img/tick.png' %}"> 
+                        <h4> Accurate Rank Prediction for GATE CS/IT and UGC NET/JRF CS Exams </h4>
+                    </div>
+
+                    <div class="rank-predictor-content-2-1">
+                        <img src="{% static 'assets/img/tick.png' %}"> 
+                        <h4> Predict Your Rank with Precision </h4>
+                    </div>
+
+                    <div class="rank-predictor-content-2-1">
+                        <img src="{% static 'assets/img/tick.png' %}"> 
+                        <h4> Get a Sneak Peek into Your Exam Performance </h4>
+                    </div>
+
+                    <div class="rank-predictor-content-2-1">
+                        <img src="{% static 'assets/img/tick.png' %}"> 
+                        <h4> Sign up for Free and Get Your Estimate after the exam! </h4>
+                    </div>
+                    <input type="button" id="rank-predictor-button" value="More Information">
+                </div>
+            </div>
+        </div>
+        rand predictor end -->
+
+        <!-- Get in Touch start
+        <div class="touch">
+            <h3 id="touch-top"> Get in Touch </h3>
+            <div class="touch-content">
+                <div class="touch-content-1">
+                    <img src="{% static 'assets/img/location-pin.png' %}">
+                    {% autoescape off %}
+                        <h4> {{ Content.address }} </h4>
+                    {% endautoescape %}
+                </div>
+
+                <div class="touch-content-2">
+                    <img src="{% static 'assets/img/communicate.png' %}">
+                    <h4> Email : {{ Content.email }} </h4>
+                    <h4> Call : +91 {{ Content.mobile }} </h4>
+                </div>
+            </div>
+        </div>
+        Get in Touch end -->
+
+        {% include 'footer.html' %}
+
+        <!-- Mobile menu-->
+        <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "280px";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
+    </body>
+</html>

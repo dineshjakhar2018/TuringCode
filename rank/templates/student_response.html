@@ -1,0 +1,179 @@
+<!-- modified_webpage.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'assets/css/rank-style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+    <title>Turing Code - UGC NET/JRF Rank Predictor</title>
+    <style>
+    </style>
+</head>
+    <div class="response-content">
+        <div class="response-content">
+            <div class="marks-content">
+                <div id="marks-header" class="marks-content-1">
+                    <div class="marks-content-2">
+    
+                    </div>
+                    <div class="marks-content-2">
+                        <h3>Paper 1</h3>
+                    </div>
+                    <div class="marks-content-2">
+                        <h3>Paper 2</h3>
+                    </div>
+                    <div class="marks-content-2">
+                        <h3>Total</h3>
+                    </div>
+                </div>
+    
+                <div class="marks-content-1">
+                    <div id="marks-left" class="marks-content-2">
+                        <h4>Attempted</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.AttemptedQuestionPaper1 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.AttemptedQuestionPaper2 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalQuestionAttempted }}</h4>
+                    </div>
+                </div>
+    
+                <div class="marks-content-1">
+                    <div id="marks-left" class="marks-content-2">
+                        <h4>Correct</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.CorrectQuestionPaper1 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.CorrectQuestionPaper2 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalCorrectQuestion }}</h4>
+                    </div>
+                </div>
+    
+                <div class="marks-content-1">
+                    <div id="marks-left" class="marks-content-2">
+                        <h4>In Correct</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.IncorrectQuestionPaper1 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.IncorrectQuestionPaper2 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalIncorrectQuestion }}</h4>
+                    </div>
+                </div>
+    
+                <div class="marks-content-1">
+                    <div id="marks-left" class="marks-content-2">
+                        <h4>Total Marks</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalMarksPaper1 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalMarksPaper2 }}</h4>
+                    </div>
+                    <div class="marks-content-2">
+                        <h4>{{ data.TotalMarks }}</h4>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- expected cutoff -->
+            <div class="cutoff-marks-content">
+                <div id="cutoff-marks-header" class="cutoff-marks-content-1">
+                        <h3> Expected Cutoff Category Wise </h3>
+                </div>
+    
+                <div class="cutoff-marks-content-1">
+                    <div id="cutoff-marks-left" class="cutoff-marks-content-2">
+                        <h4></h4>
+                    </div>
+                    {% for item in data.ExpectedCutoff %}
+                        <div class="cutoff-marks-content-2">
+                            <h4>{{ item.category }}</h4>
+                        </div>
+                    {% endfor %}
+    
+    
+                </div>
+    
+                <div class="cutoff-marks-content-1">
+                    <div id="cutoff-marks-left" class="cutoff-marks-content-2">
+                        <h4>JRF</h4>
+                    </div>
+                    {% for item in data.ExpectedCutoff %}
+                        <div class="cutoff-marks-content-2">
+                            <h4>{{ item.jrf }}</h4>
+                        </div>
+                    {% endfor %}
+                </div>
+    
+                <div class="cutoff-marks-content-1">
+                    <div id="cutoff-marks-left" class="cutoff-marks-content-2">
+                        <h4>NET</h4>
+                    </div>
+                    {% for item in data.ExpectedCutoff %}
+                        <div class="cutoff-marks-content-2">
+                            <h4>{{ item.assistant_professor }}</h4>
+                        </div>
+                    {% endfor %}
+                </div>
+    
+                <div class="cutoff-marks-content-1">
+                    <div id="cutoff-marks-left" class="cutoff-marks-content-2">
+                        <h4>Qualify Marks </h4>
+                    </div>
+                    <div class="cutoff-marks-content-2">
+                        <h4>80</h4>
+                    </div>
+                    <div class="cutoff-marks-content-2">
+                        <h4>70</h4>
+                    </div>
+                    <div class="cutoff-marks-content-2">
+                        <h4>70</h4>
+                    </div>
+    
+                    <div class="cutoff-marks-content-2">
+                        <h4>70</h4>
+                    </div>
+    
+                </div>
+    
+                
+            </div>
+    
+            </div>
+    
+            <div class="rank-content">
+                <div class="rank">
+                    <div class="rank-1">
+                        <img src="{% static "assets/img/ranking.png" %}">
+                        <h4> Current Rank </h4>
+                        <h4> {{data.Rank}} / {{data.TotalStudent}} </h4>
+                    </div>
+    
+                    <div class="rank-2">
+                        <img src="{% static "assets/img/pointers.png" %}">
+                        <h4> Current Rank in ({{ data.StudentCategory }})</h4>
+                        <h4> {{ data.RankInStudentCategory }} / {{ data.TotalStudentCategory }} </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<body>
+    {{ modified_html | safe }}
+</body>
+</html>
