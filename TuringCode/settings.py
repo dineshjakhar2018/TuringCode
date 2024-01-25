@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%+4x!!_nfwby&33@)9a1ro@7js&+vu4vd0y4dfzth7q7judgn9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -128,11 +128,6 @@ USE_TZ = True
 #if we use S3 bucket then its useless
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'StaticFiles')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles')
-]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
