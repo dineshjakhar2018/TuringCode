@@ -89,3 +89,16 @@
                 </div>
             </div>
             <!-- Menu End here-->
+            <script>
+                document.addEventListener('keydown', function (e) {
+                  if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    //alert('View source is disabled.');
+                  }
+                });
+            
+                document.addEventListener('contextmenu', function (e) {
+                  e.preventDefault();
+                  //alert('Right-click is disabled.');
+                });
+              </script>

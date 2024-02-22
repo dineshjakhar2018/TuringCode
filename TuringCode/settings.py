@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%+4x!!_nfwby&33@)9a1ro@7js&+vu4vd0y4dfzth7q7judgn9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -125,9 +125,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 #remove when using s3 bucket
-#if we use S3 bucket then its useless
+
+
+'''
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'StaticFiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'staticfiles')
+]
+'''
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -154,9 +162,6 @@ RAZORPAY_KEY_SECRET = 'l7Pc6jYjq3J28UUWvzFSE8JD'
 #use because popup box blank
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
-#texteditor image path
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-
 
 
 # Increase the maximum upload size for single files (default is 2.5 MB)
@@ -167,5 +172,26 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000  # 1 GB (in bytes)
 
 # Set the maximum request size
 DATA_UPLOAD_MAX_REQUEST_SIZE = 1048576000  # 1 GB (in bytes)
+
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+#aws bucket settings
+AWS_ACCESS_KEY_ID = 'AKIAXYKJVBVIWKFPWY76'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'turingcode11'
+AWS_S3_SIGNATURE_NAME = 's3v4',
+AWS_S3_REGION_NAME = 'ap-southeast-2'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL =  None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+turingcodebucket = 'turingcode11'
+STATIC_URL = 'https://%s.s3.amazonaws.com/'%turingcodebucket
+#if we use S3 bucket then its useless
+CKEDITOR_BASEPATH = 'https://turingcode11.s3.amazonaws.com/ckeditor/ckeditor/'
+CKEDITOR_UPLOAD_PATH = 'https://turingcode11.s3.amazonaws.com/uploads/'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 

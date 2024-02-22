@@ -15,6 +15,19 @@
         <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <script src="{% static 'assets/js/script.js' %}"></script>
+        <script>
+            document.addEventListener('keydown', function (e) {
+              if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                //alert('View source is disabled.');
+              }
+            });
+        
+            document.addEventListener('contextmenu', function (e) {
+              e.preventDefault();
+              //alert('Right-click is disabled.');
+            });
+          </script>
     </head>
     <body>
         <div class="content">

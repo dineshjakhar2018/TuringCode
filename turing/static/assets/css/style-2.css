@@ -311,7 +311,7 @@ h4{
 }
   
 .collapsible:after {
-    content: '\2304';
+    content: '+';
     font-weight: bold;
     float: right;
     margin-left: 0 0 0 5px;
@@ -319,7 +319,9 @@ h4{
 }
   
 .active:after {
-    content: "\2303";
+    content: "-";
+    margin-left: 0 0 0 5px;
+    font-size:15px;
 }
   
 .list-content{
@@ -384,7 +386,9 @@ h4{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 2px;
 }
-
+.video-name-mobile{
+    display: none;
+}
 .video-wrapper {
     width: 800px;
     height: 400px;
@@ -1479,8 +1483,8 @@ h4{
 
 /* Set the width and height of the video player */
 #myVideo {
-    width: 100%; /* Make the video fill the container width */
-    height: 100%; /* Make the video fill the container height */
+    max-width: 680px; /* Adjust as needed */
+    max-height: 450px; /* Adjust as needed */
 }
 
 #videoPlayer{
@@ -1496,6 +1500,7 @@ h4{
     }
     .content-container{
         margin:0px;
+        overflow-x: hidden;
     }
     .content-menu{
         display: none;
@@ -1589,6 +1594,10 @@ h4{
         max-height:70vh;
         max-width:90vw;
         margin:10px;
+    }
+    .question_text{
+        width:96vw;
+        overflow: auto;
     }
     .solution-content-answer-mcq{
         width:94%;
@@ -1770,6 +1779,7 @@ h4{
     }
     .course-detail-content{
         justify-content: center;
+        margin-right:0px;
     }
     .course-detail-content-1{
         width:92vw;
@@ -1790,17 +1800,43 @@ h4{
         border-bottom:0px;
         margin-right:10px;
     }
+    .course-detail-content-1-inner{
+        flex-direction: column;
+    }
+    .course-details-content-1-inner-left{
+        width:100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .course-details-content-1-inner-right{
+        width:100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .about-course-content{
-        margin-right:10px;
+        width:92vw;
     }
     /* Course details style end*/
 
 
     /* play video mobile style start here*/
+    #play-video-header{
+        display: none;
+    }
     .video-content{
         display: flex;
         justify-content: center;
         margin:0px;
+    }
+    .video-name-mobile{
+        display: flex;
+        width:100%;
+    }
+    .video-name-mobile p{
+        padding:10px;
+        margin: 0;
+        font-size:15px;
     }
     .video-wrapper {
         width: 96vw;
@@ -1808,15 +1844,25 @@ h4{
         border-radius:2px;
     }
     .video-content-2{
+        max-height:50vh;
         width:96vw;
         margin-left:2vw;
+        overflow: auto;
+        margin-bottom:10px;
+        /*border-bottom:1px solid #dcdcdc;*/
+    }
+    .video-content-2-header h2{
+        font-size:15px;
     }
     #lock{
-        padding-right: 5px;
+        padding-right: 10px;
         color:rgb(255, 0, 0);
     }
     #unlock{
-        padding-right: 5px;
+        padding-right: 10px;
+    }
+    #video-content-2-inner-button{
+        margin-right:10px;
     }
     /*play video mobile style end here*/
 

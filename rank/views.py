@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import UgcNetStudent,UgcNetAnswerKey,UgcNetExam,UgcNetExpectedCutOff,GateExam,GateAnswerKey,GateStudent,GateQualifyMarks,GateAIRvsMarks
+from .models import UgcNetStudent,UgcNetAnswerKey,UgcNetExam,UgcNetExpectedCutOff,GateExam,GateAnswerKey,GateStudent,GateQualifyMarks,GateAIRvsMarks,GateNewExam,GateNewAnswerKey,GateNewStudent,GateNewQualifyMarks,GateNewAIRvsMarks
 import random
 from django.conf import settings
 from django.http import JsonResponse
@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+from turing.models import test
 
 
 #ugc net rank predictor views
@@ -610,12 +610,24 @@ def GateResponseSolution(request):
 
             #normalization marks 
 
-            #gate score 
+            #gate score
+            #get mean_top_marks
+            currentexam = GateExam.objects.get(subject=subject, shift=shift)
+            mean_top_marks = currentexam.mean_top_marks
 
             #estimate air rank 
 
             #current rank
+            CurrentGateRank = GateStudent.objects.filter(total_marks__gt=TotalMarks).count()
 
+            #qualifying marks category wise 
+            GateQualifyMarksGEN = GateQualifyMarks.objects.get(category='GENERAL',exam=gatestudent.exam)
+            GateQualifyMarksOBC = GateQualifyMarks.objects.get(category='OBC(NCL)',exam=gatestudent.exam)
+            GateQualifyMarksSC = GateQualifyMarks.objects.get(category='SC',exam=gatestudent.exam)
+            
+            #sample data for calculate AIR vs marks
+            GateSampleData = GateAIRvsMarks.objects.filter(exam=gatestudent.exam)
+            sample_data = [(entry.marks, entry.air) for entry in GateSampleData] 
 
             data = {
                 'AttemptedMark1Ques':AttemptedMark1Ques,
@@ -636,10 +648,15 @@ def GateResponseSolution(request):
                 'total_1_mark':Positive1Marks - Negative1Marks,
                 'total_2_mark':Positive2Marks - Negative2Marks,
                 'TotalMarks':TotalMarks,
-                'current_rank' : '1',
-                'total_current_student':total_current_student,
-                'air':'1454 - 1972',
+                'current_rank' : CurrentGateRank+1,
+                'total_current_student':total_current_student+1,
+                'air':calculate_gate_rank(TotalMarks, sample_data),
                 'subject' : gatestudent.subject, 
+                'GateScore' : calculate_gate_score(float(TotalMarks),float(GateQualifyMarksGEN.marks),float(mean_top_marks)),
+                'GateQualifyMarksGEN' : GateQualifyMarksGEN.marks,
+                'GateQualifyMarksOBC' : GateQualifyMarksOBC.marks,
+                'GateQualifyMarksSC' : GateQualifyMarksSC.marks,
+                'Accuracy' : accuracy*100,
             }
 
             gatestudent.attempted = total_attempted
@@ -682,14 +699,16 @@ def send_email(Subject,StudentEmail,Otp,EmailType):
             # Assuming you have a user or username to personalize the email
             StudentName = Student.candidate_name
 
-            html_message = render_to_string('email.html', {'StudentName': StudentName,'otp':Otp,'email_type':EmailType})
+            html_message = render_to_string('rank-email.html', {'StudentName': StudentName,'otp':Otp,'email_type':EmailType})
         
         else:
             Student = GateStudent.objects.get(email = StudentEmail)
             # Assuming you have a user or username to personalize the email
             StudentName = Student.name
 
-            html_message = render_to_string('email.html', {'StudentName': StudentName,'otp':Otp,'email_type':EmailType})
+            print("Student Name = ",StudentName)
+    
+            html_message = render_to_string('rank-email.html', {'StudentName': StudentName,'otp':Otp,'email_type':EmailType})
 
         # Create a plain text version of the HTML content
         plain_message = strip_tags(html_message)
@@ -717,3 +736,348 @@ def send_email(Subject,StudentEmail,Otp,EmailType):
     except Exception as e:
         print("email not send because ",e)
         return False
+    
+#gate score calculator algorithm
+def calculate_gate_score(actual_marks, qualifying_marks, mean_top_marks):
+    St = 900  # Score assigned to Mt
+    Sq = 350  # Score assigned to Mq
+    
+    # GATE Score calculation formula
+    gate_score = ((actual_marks - qualifying_marks) / (mean_top_marks - qualifying_marks)) * (St - Sq) + Sq
+    
+    # Ensure the calculated score is capped at a maximum of 1000
+    gate_score = min(gate_score, 1000)
+    gate_score = int(gate_score)
+    return gate_score
+
+
+#calculate gate rank
+def calculate_gate_rank(marks, data):
+    # Assuming data is a list of tuples (marks, rank)
+    sorted_data = sorted(data, key=lambda x: x[0])  # Sort the data based on marks
+    for i in range(len(sorted_data) - 1):
+        m1, r1 = sorted_data[i]
+        m2, r2 = sorted_data[i + 1]
+
+        if m1 <= marks <= m2:
+            # Linear interpolation for the rank
+            ratio = (marks - m1) / (m2 - m1)
+            estimated_rank = r1 + ratio * (r2 - r1)
+            estimated_rank = int(estimated_rank)
+            return estimated_rank
+
+    # If the marks are beyond the range of the provided data, use the rank of the last data point
+    return sorted_data[-1][1]
+
+
+#gate new rank  predictor with url
+def gatenewrankpredictor(request):
+    #index page of ugc net rank predictor
+    return render(request,'gate-new-rank-predictor.html',{'context':''})
+
+def GateNewStudentRegister(request):
+    try:
+        request.session.flush()
+        if request.method == 'POST':
+            # Extract data from the POST request
+            url = request.POST.get('url')
+            
+            try:                
+                #get the data from url
+                response = requests.get(url)
+                response.raise_for_status()  # Check for HTTP errors
+
+                    # Parse the HTML content of the page
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                # Extract data for UgcNetStudent
+                student_table = soup.find('table', {'border': '1', 'cellpadding': '1', 'cellspacing': '1', 'style': 'width:500px'})
+                rows = student_table.find_all('tr')
+
+                gate_student_data = {}
+
+                for row in rows:
+                    columns = row.find_all('td')
+                    if len(columns) == 2:
+                        key = columns[0].text.strip()
+                        value = columns[1].text.strip()
+                        gate_student_data[key] = value
+                
+
+                SubjectAndShift = gate_student_data.get('Subject','')
+                subject = ''
+                shift = ''
+                if 'CS' in SubjectAndShift:
+                    shift = SubjectAndShift[0:3]
+                    subject = SubjectAndShift[4:]
+                
+                if 'DA' in SubjectAndShift:
+                    shift = SubjectAndShift[0:2]
+                    subject = SubjectAndShift[3:]
+
+                currentexam = GateNewExam.objects.get(subject=subject, shift=shift)
+
+                #check if student already registered
+                try:
+                    ugcnetstudentregisted = GateNewStudent.objects.get(candidateid = gate_student_data.get('Candidate ID', ''))
+                    ugcnetstudentregisted.url = url
+                    ugcnetstudentregisted.save()
+                    #return JsonResponse({'status':'success','email_already_verified':'0'})
+                except:
+                    #store data in database if user check rank first time
+                    # Create UgcNetStudent instance and save to the database
+                    gate_student = GateNewStudent.objects.create(
+                        exam = currentexam,
+                        name = gate_student_data.get('Candidate Name', ''),
+                        candidateid = gate_student_data.get('Candidate ID', ''),
+                        subject = subject,
+                        shift = shift,
+                        positive_marks = 0,
+                        negative_marks = 0,
+                        total_marks = 0,
+                        attempted = 0,
+                        correct = 0,
+                        incorrect = 0,
+                        gatescore = 0,
+                        responseurl = url,
+                        )
+            except Exception as e:
+                print("something went wrong",e)
+                return JsonResponse({'status': 'error'})
+
+
+            #store email in session for student response view
+            request.session['rank_predictor_candidateid'] = gate_student_data.get('Candidate ID', '')
+
+            #store email in session for student response view
+            request.session['rank_predictor_url'] = url
+
+            # Return success response
+            return JsonResponse({'status': 'success'})
+        else:
+            print("error")
+            return JsonResponse({'status': 'error'})
+    except Exception as e:
+        print("ugc net form submit error is ",e)
+
+'''
+def GateNewResponse(request):
+    if request.session.get('rank_predictor_candidateid'):
+        try:
+            gatestudent = GateNewStudent.objects.get(candidateid = request.session.get('rank_predictor_candidateid'))
+            url = gatestudent.url
+
+
+            # Make a request to the specified URL
+            response = requests.get(url)
+            response.raise_for_status()  # Check for HTTP errors
+
+            # Parse the HTML content of the page
+            soup = BeautifulSoup(response.text, 'lxml')
+
+            response_tables = soup.find_all('table', {'class': 'menu-tbl'})
+
+            AttemptedMark1Ques = 0
+            AttemptedMark2Ques = 0
+            CorrectMark1Ques = 0
+            CorrectMark2Ques = 0
+            Positive1Marks = 0
+            Positive2Marks = 0
+            Negative1Marks = 0
+            Negative2Marks = 0
+
+
+
+            for response_table in response_tables:
+                # Extract data from the table
+                table_data = extract_table_data(response_table)
+
+                # Skip saving if the data is empty
+                if not any(table_data.values()):
+                    continue
+
+                # Print the extracted data for debugging
+                #print("Extracted Data:", table_data)
+
+                #get the data of current question
+                gateanswerkey = GateNewAnswerKey.objects.get(q_id=str(table_data.get('Question ID : ', '')),exam = gatestudent.exam)
+
+                CurrentQuesAnswer = gateanswerkey.answer.split(" or ")
+
+                #check if question is attempted or not
+                #-- means question not attempted
+                if table_data.get('Status ','') == 'Answered':
+                        if q_type == 'MCQ' or q_type == 'MSQ':
+                            if your_ans in QuesAns or gateanswerkey.answer == 'MTA':
+                                #if question is 1 marks
+                                if gateanswerkey.marks == 1:
+                                    AttemptedMark1Ques += 1
+                                    CorrectMark1Ques += 1
+                                    Positive1Marks += 1
+                                else:
+                                    AttemptedMark2Ques +=  1
+                                    CorrectMark2Ques += 1
+                                    Positive2Marks += 2
+                            else:
+                                #if question is 1 marks
+                                if gateanswerkey.marks == 1:
+                                    AttemptedMark1Ques += 1
+                                    Negative1Marks += gateanswerkey.negative_marks
+                                else:
+                                    AttemptedMark2Ques += 1
+                                    Negative2Marks +=  gateanswerkey.negative_marks
+                        else:
+                            #Question is NAT
+                            if 'to' in gateanswerkey.answer:
+                                NatAnswer = gateanswerkey.answer.split(' to ')
+                                #correct answer
+                                if float(your_ans) >= float(NatAnswer[0])  and float(your_ans) <= float(NatAnswer[1]):
+                                    #if question is 1 marks
+                                    if gateanswerkey.marks == 1:
+                                        AttemptedMark1Ques += 1
+                                        CorrectMark1Ques += 1
+                                        Positive1Marks +=  1
+                                    else:
+                                        AttemptedMark2Ques += 1
+                                        CorrectMark2Ques += 1
+                                        Positive2Marks += 2
+                                else:   
+                                    #if question is 1 marks
+                                    if gateanswerkey.marks == 1:
+                                        AttemptedMark1Ques += 1
+                                        Negative1Marks += gateanswerkey.negative_marks
+                                    else:
+                                        AttemptedMark2Ques += 1
+                                        Negative2Marks += gateanswerkey.negative_marks
+
+                            elif your_ans in QuesAns or gateanswerkey.answer == 'MTA':
+                                #if question is 1 marks
+                                if gateanswerkey.marks == 1:
+                                    AttemptedMark1Ques += 1
+                                    CorrectMark1Ques += 1
+                                    Positive1Marks += 1
+                                else:
+                                    AttemptedMark2Ques += 1
+                                    CorrectMark2Ques += 1
+                                    Positive2Marks += 2
+                            else:
+                                #if question is 1 marks
+                                if gateanswerkey.marks == 1:
+                                    AttemptedMark1Ques += 1
+                                    Negative1Marks += gateanswerkey.negative_marks
+                                else:
+                                    AttemptedMark2Ques += 1
+                                    Negative2Marks += gateanswerkey.negative_marks
+
+                else:
+                    #question not attempted but check MTA (Mark to All)
+                    if gateanswerkey.answer == 'MTA':
+                        if gateanswerkey.marks == 1:
+                            CorrectMark1Ques += 1
+                            Positive1Marks += 1
+                        else:
+                            CorrectMark2Ques += 1
+                            Positive2Marks += 1
+            
+            #total student check this rank till now
+            total_current_student = GateStudent.objects.filter(exam=gatestudent.exam).exclude(attempted = 0).count()
+
+            #Total 1 marks questions
+            total_1_marks_questions = GateAnswerKey.objects.filter(exam = gatestudent.exam,marks = 1).count()
+
+            #Total 2 marks questions
+            total_2_marks_questions = GateAnswerKey.objects.filter(exam=gatestudent.exam,marks=2).count()
+
+            #total questions
+            total_question_in_paper = total_1_marks_questions + total_2_marks_questions
+
+            #total attempted questions
+            total_attempted = AttemptedMark1Ques + AttemptedMark2Ques
+
+            #total Correct questions
+            total_correct_question = CorrectMark1Ques + CorrectMark2Ques
+
+            #attempted %
+            attempted_avg = total_attempted / total_question_in_paper
+            attempted_avg = round(attempted_avg, 2)
+            
+            #accuracy
+            accuracy = total_correct_question / total_attempted 
+            accuracy = round(accuracy,2)
+
+            #total marks 
+            TotalMarks = (Positive1Marks + Positive2Marks) - (Negative1Marks + Negative2Marks)
+
+            #normalization marks 
+
+            #gate score
+            #get mean_top_marks
+            currentexam = GateExam.objects.get(subject=subject, shift=shift)
+            mean_top_marks = currentexam.mean_top_marks
+
+            #estimate air rank 
+
+            #current rank
+            CurrentGateRank = GateStudent.objects.filter(total_marks__gt=TotalMarks).count()
+
+            #qualifying marks category wise 
+            GateQualifyMarksGEN = GateQualifyMarks.objects.get(category='GENERAL',exam=gatestudent.exam)
+            GateQualifyMarksOBC = GateQualifyMarks.objects.get(category='OBC(NCL)',exam=gatestudent.exam)
+            GateQualifyMarksSC = GateQualifyMarks.objects.get(category='SC',exam=gatestudent.exam)
+            
+            #sample data for calculate AIR vs marks
+            GateSampleData = GateAIRvsMarks.objects.filter(exam=gatestudent.exam)
+            sample_data = [(entry.marks, entry.air) for entry in GateSampleData] 
+
+            data = {
+                'AttemptedMark1Ques':AttemptedMark1Ques,
+                'AttemptedMark2Ques':AttemptedMark2Ques,
+                'total_attempted':total_attempted,
+                'total_1_marks_questions':total_1_marks_questions,
+                'total_2_marks_questions':total_2_marks_questions,
+                'total_question_in_paper':total_question_in_paper,
+                'CorrectMark1Ques':CorrectMark1Ques,
+                'CorrectMark2Ques':CorrectMark2Ques,
+                'total_correct_question':total_correct_question,
+                'Positive1Marks':Positive1Marks,
+                'Positive2Marks':Positive2Marks,
+                'total_positive_marks':Positive1Marks + Positive2Marks,
+                'Negative1Marks':Negative1Marks,
+                'Negative2Marks':Negative2Marks,
+                'total_negative':Negative1Marks + Negative2Marks,
+                'total_1_mark':Positive1Marks - Negative1Marks,
+                'total_2_mark':Positive2Marks - Negative2Marks,
+                'TotalMarks':TotalMarks,
+                'current_rank' : CurrentGateRank+1,
+                'total_current_student':total_current_student+1,
+                'air':calculate_gate_rank(TotalMarks, sample_data),
+                'subject' : gatestudent.subject, 
+                'GateScore' : calculate_gate_score(float(TotalMarks),float(GateQualifyMarksGEN.marks),float(mean_top_marks)),
+                'GateQualifyMarksGEN' : GateQualifyMarksGEN.marks,
+                'GateQualifyMarksOBC' : GateQualifyMarksOBC.marks,
+                'GateQualifyMarksSC' : GateQualifyMarksSC.marks,
+                'Accuracy' : accuracy*100,
+            }
+
+            gatestudent.attempted = total_attempted
+            gatestudent.positive_marks = Positive1Marks + Positive2Marks
+            gatestudent.negative_marks = Negative1Marks + Negative2Marks
+            gatestudent.total_marks = TotalMarks
+            gatestudent.correct = total_correct_question
+            gatestudent.incorrect = total_attempted - total_correct_question
+            gatestudent.save()
+
+
+            # Render the modified HTML content
+            modified_html = str(soup)
+            return render(request, 'ugcnet-response.html', {'data':data,'modified_html': modified_html,})
+
+        except requests.RequestException as e:
+            print("ugc net response error = ",e)
+            return render(request, 'ugc_rank_predictor.html', {'error_message': ""})
+
+        except Exception as e:
+            return render(request, 'ugc_rank_predictor.html', {'error_message': f"Error: {str(e)}"})
+    else:
+        return render(request,'ugc_rank_predictor.html',{'context':''})
+'''

@@ -11,4 +11,8 @@ urlpatterns = [
     path('gate-student-response/',views.GateStudentResponse,name="GateStudentResponse"),
     path('gate-verify-email-otp/',views.gate_verify_email_otp,name="gate_verify_email_otp"),
     path('gate-response/', views.GateResponseSolution, name='gate_response'),
+
+    path('gate-new-rank-predictor/',views.gatenewrankpredictor,name="gatenewrankpredictor"),
+    path('gate-new-student-save/',views.GateNewStudentRegister,name="gatenewstudentsave"),
+    path('gate-new-response/', views.examrank, name='gatenewresponse'),
 ]

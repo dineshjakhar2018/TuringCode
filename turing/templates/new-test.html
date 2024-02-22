@@ -33,6 +33,19 @@
                 background-image: url('{% static "assets/img/mark.png" %}');
             }
         </style>
+        <script>
+            document.addEventListener('keydown', function (e) {
+              if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                //alert('View source is disabled.');
+              }
+            });
+        
+            document.addEventListener('contextmenu', function (e) {
+              e.preventDefault();
+              //alert('Right-click is disabled.');
+            });
+          </script>
     </head>
     <body>
         <!--loader code -->
@@ -45,7 +58,7 @@
             <div class="content-left">
                 <div class="pc-content">
                     <div class="logo">
-                        <img src="{% static 'assets/img/logo.png' %}">
+                        <img src="{% static 'assets/img/white_logo.png' %}">
                         <p>Turing Code Online Test Series for GATE (CS, DS & AI) and UGC NET/JRF (Computer Science and Applications) </p>
                     </div>
                     <div class="calculator">
@@ -1513,9 +1526,12 @@
                     success: function(data) {
                         // On successful form submission, load the next content
                         // Set the scroll position back to the stored value
+                        if(data.completed === '1'){
+                            window.location.href = 'test-submit/?test={{TestSlug}}';
+                        }
                     },
                     error: function() {
-                        alert('Error occurred. Please restart your test.');
+                        alert('Something went wrong Please restart your test.');
                     }
                 });
 

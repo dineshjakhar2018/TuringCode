@@ -8,8 +8,19 @@
     <link rel="stylesheet" href="{% static 'assets/css/rank-style.css' %}">
     <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
     <title>Turing Code - UGC NET/JRF Rank Predictor</title>
-    <style>
-    </style>
+    <script>
+        document.addEventListener('keydown', function (e) {
+          if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            //alert('View source is disabled.');
+          }
+        });
+    
+        document.addEventListener('contextmenu', function (e) {
+          e.preventDefault();
+          //alert('Right-click is disabled.');
+        });
+      </script>
 </head>
     <div class="response-content">
         <div class="response-content">

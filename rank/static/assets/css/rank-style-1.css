@@ -286,7 +286,7 @@ body {
 }
 
 .faq-container {
-    width: 600px;
+    width: 800px;
     margin: 0 auto;
     background-color: #fff;
     border-radius: 8px;
@@ -306,12 +306,16 @@ body {
 }
 
 .faq-question:hover {
-    background-color: #f9f9f9;
+    background-color: #f0e8e8;
 }
 
 .faq-question label {
     flex: 1;
     margin: 0;
+    font-family: 'Arial', sans-serif; /* Choose a readable font */
+    font-size: 18px; /* Set the font size */
+    line-height: 1.5; /* Define line height for better readability */
+    color: #333; /* Set text color */
 }
 
 .faq-answer {
@@ -323,6 +327,10 @@ body {
 
 .faq-answer p {
     margin: 0;
+    font-family: 'Arial', sans-serif; /* Choose a readable font */
+    font-size: 18px; /* Set the font size */
+    line-height: 1.5; /* Define line height for better readability */
+    color: #333; /* Set text color */
 }
 
 .icon {
@@ -636,11 +644,21 @@ table{
         margin:10px;
     }
     
-    .faq-question{
-        font-size:13px;
+    .faq-question label {
+        flex: 1;
+        margin: 0;
+        font-family: 'Arial', sans-serif; /* Choose a readable font */
+        font-size: 16px; /* Set the font size */
+        line-height: 1.5; /* Define line height for better readability */
+        color: #333; /* Set text color */
     }
-    .faq-answer{
-        font-size:13px;
+    
+    .faq-answer p {
+        margin: 0;
+        font-family: 'Arial', sans-serif; /* Choose a readable font */
+        font-size: 16px; /* Set the font size */
+        line-height: 1.5; /* Define line height for better readability */
+        color: #333; /* Set text color */
     }
 }
 

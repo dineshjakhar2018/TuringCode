@@ -35,7 +35,7 @@
             {% include 'menu.html' %}
 
             <div class="content-container">
-                <div class="content-container-header">
+                <div id="play-video-header" class="content-container-header">
                     <img src="{% static 'assets/img/right-arrow.png' %}"><h2>{{ video.subject_name }} / {{ video.title }} </h2>
                 </div>
 
@@ -56,10 +56,13 @@
                             </video>
                         </div>
                     </div>
+                    <div class="video-name-mobile">
+                      <p>{{ video.title }} </p>
+                    </div>
 
                     <div class="video-content-2">
                         <div class="video-content-2-header">
-                            <h2>Play List</h2>
+                            <h2>{{ video.subject_name }}</h2>
                         </div>
 
                         {% for x in video_list %}
@@ -83,7 +86,7 @@
                                             <i id="lock" class="fa fa-lock"></i>
                                         {% endif %}
                                     {% else %}
-                                    <i id="unlock" class="fa fa-unlock"></i>
+                                    <!--<i id="unlock" class="fa fa-unlock"></i>-->
                                     {% endif %}
                             </div>
                         </a>

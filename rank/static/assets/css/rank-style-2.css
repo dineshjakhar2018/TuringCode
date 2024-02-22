@@ -200,10 +200,12 @@ th,td {
     }
 
     .exam-name-heading h3{
-        font-size:18px;
+        font-size:13px;
         margin:0px;
         padding:0px;
-        margin-bottom:10px;
+        text-align: center;
+        line-height: 20px;
+        font-weight: 500;
     }
 
     .content{
@@ -274,6 +276,7 @@ th,td {
         flex-wrap: wrap;
         width:100%;
         margin:0px;
+        overflow: auto;
     }
 
     .exam-mark-analysis{
@@ -285,7 +288,7 @@ th,td {
         background-color:#fff;
         width:90%;
         height:auto;
-        overflow: hidden;
+        overflow: auto;
     }
 
     table{
@@ -307,7 +310,7 @@ th,td {
     
     th,td {
         text-align: center;
-        padding:10px 15px;
+        padding:10px 10px;
         margin:0px;
         font-weight: bold;
         font-size: 13px;
@@ -333,10 +336,11 @@ th,td {
     }
     .qualifying-heading h4{
         font-family: 'Roboto', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         margin:0px;
         text-align: right;
-        color:#ff4c4c
+        color:#ff4c4c;
+        margin-left:5px;
     }
     .qualifying-category{
         display: flex;
@@ -357,7 +361,7 @@ th,td {
     .qualifying-category p{
         margin:0px;
         padding:2px;
-        font-size:13px;
+        font-size:10px;
         font-family: 'Roboto', sans-serif;
         color: #ff4c4c;
     }

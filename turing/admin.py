@@ -75,6 +75,8 @@ class question_solutionInline(admin.TabularInline):
 class questionAdmin(admin.ModelAdmin):
     list_display = ('id','test_id','paper_name','question_no','question_time','question_text','positive_marks','negative_marks','question_type','status','nat_range','nat_round_decimal_digit')
     inlines = [question_optionsInline,question_answerInline,question_solutionInline]
+    list_filter = ('test_id','question_type','positive_marks','paper')
+    search_fields = ('test_id','question_type','positive_marks')
 
 admin.site.register(question,questionAdmin)
 
@@ -182,17 +184,8 @@ class testseries_enrollAdmin(admin.ModelAdmin):
 
 admin.site.register(testseries_enroll,testseries_enrollAdmin)
 
-class TestInstructionForm(forms.ModelForm):
-    class Meta:
-        model = TestInstruction
-        fields = '__all__'
-        widgets = {
-            'instruction_1': CKEditorWidget(),
-            'instruction_2': CKEditorWidget(),
-        }
 
 class TestInstructionAdmin(admin.ModelAdmin):
-    form = TestInstructionForm
     list_display = ('id', 'exam', 'instruction_1', 'instruction_2')
 
 admin.site.register(TestInstruction, TestInstructionAdmin)

@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Turing Code - UGC NET/JRF Rank Predictor</title>
+        <title>Turing Code - GATE 2024 Rank Predictor</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'assets/css/rank-style.css'%}">
@@ -33,7 +33,7 @@
             </div>
 
             <div class="exam-name-heading">
-                <h3> Predict Your UGC NET/JRF June 2024 Rank  </h3>
+                <h3> Predict Your GATE 2024 Rank  </h3>
             </div>
 
             <div class="exam-name-heading">
@@ -43,7 +43,7 @@
                 <div class="textbox">
                     <form id="myForm" method="post" onsubmit="return validateForm()">
                         {% csrf_token %}
-                        <div class="textbox-1">
+                        <!--<div class="textbox-1">
                             <input type="email" id="email" value="" placeholder="Enter Your Email ID" name="email" required>
                             <input type="text" id="mobile" value="" placeholder="Mobile Number" name="mobile" required>
                         </div>
@@ -57,45 +57,95 @@
                                 <option value="ST"> ST </option>
                                 <option value="PWD"> PWD </option>
                             </select>
+                            
+                        </div>
+                        -->
+                        <div class="textbox-1">
                             <input type="text" id="url" value="" placeholder="Paste Your Response Sheet URL" name="url" required>
                         </div>
                         <div class="textbox-1">
-                            <input type="submit" id="submit-button" value="NEXT">
+                            <input type="submit" id="submit-button" value="Submit">
                         </div>
                     </form>
             </div>
         </div>
             <div class="detail-video-faq">
                 <div class="detail-video">
-                    <h3> How to use UGC NET/JRF rank predictor. </h3>
+                    <h3> How to use GATE 2024 rank predictor. </h3>
                     <iframe id="video-iframe" src="https://www.youtube.com/embed/6A6jV8UEWas" frameborder="0" allowfullscreen></iframe>
                 </div>
 
                 <div class="detail-faq">
                     
-                    <h2 id="faq-heading">UGC NET Rank Predictor FAQ</h2>
+                    <h2 id="faq-heading">GATE 2024 Rank Predictor FAQ</h2>
 
                     <div class="faq-container">
 
                         <div class="faq-question" onclick="toggleFAQ('answer1')">
-                            <label>Q: How does the UGC NET rank predictor work?</label>
+                            <label>What information is required from the student to use the Turing Code GATE 2024 Rank Predictor?</label>
                             <div class="icon" id="icon1">+</div>
                         </div>
                         <div class="faq-answer" id="answer1">
-                            <p>The UGC NET rank predictor uses a predictive algorithm based on historical data and trends to estimate your rank
-                                based on your performance in the mock tests and other relevant parameters.</p>
+                            <p>To use the Turing Code GATE 2024 Rank Predictor, you need to provide basic information
+                                 such as your name and email. Additionally, you'll be asked to submit your response sheet for
+                                  accurate calculations.</p>
                         </div>
 
                         <div class="faq-question" onclick="toggleFAQ('answer2')">
-                            <label>Q: Can I trust the predicted rank?</label>
+                            <label> How does the email verification process work in the Turing Code GATE 2024 Rank Predictor? </label>
                             <div class="icon" id="icon2">+</div>
                         </div>
                         <div class="faq-answer" id="answer2">
-                            <p>The predicted rank is an estimate and should be taken as a reference. Actual exam results may vary, and the
-                                predictor aims to provide a rough idea based on available data.</p>
+                            <p>After entering your email, the Turing Code GATE 2024 Rank Predictor ensures security through OTP verification.
+                                 This step is crucial to validate your identity and provide personalized results.</p>
                         </div>
 
-                        <!-- Add more FAQ items as needed -->
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> What information will I have access to after completing the verification process? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>Once your email is verified, you can view your total marks, All India Rank (AIR), accuracy, approximate GATE score, and detailed 
+                                question-wise performance, including the number of attempted 1-mark and 2-mark questions.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> How does the Turing Code GATE 2024 Rank Predictor calculate the All India Rank (AIR)? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>The Turing Code GATE 2024 Rank Predictor estimates the All India Rank based on your response sheet and compares it with historical GATE data, ensuring a
+                                 comprehensive and accurate prediction of your standing among all candidates.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> Can I see a breakdown of my performance, including the number of correct 1-mark and 2-mark questions attempted? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p> Yes, the Turing Code GATE 2024 Rank Predictor provides detailed insights into your performance, including the number
+                                 of correct 1-mark and 2-mark
+                                 questions attempted. This breakdown helps you understand your strengths and areas for improvement.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label>  How does the Turing Code GATE 2024 Rank Predictor calculate the approximate GATE Score? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p> The approximate GATE Score is calculated by the Turing Code GATE 2024 Rank Predictor based on
+                                 your responses and the official answer key. </p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label>  Can I get information on the approximate qualifying marks category-wise? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>  Yes, the Turing Code GATE 2024 Rank Predictor provides an estimate of the qualifying marks category-wise.
+                                 This information helps you
+                                 gauge your performance in comparison to the qualifying thresholds set for different categories.</p>
+                        </div>
 
                     </div>
 
@@ -104,7 +154,7 @@
         
 
 <!-- Email Verification Modal -->
-<div id="emailVerifyModal" class="modal">
+<!--<div id="emailVerifyModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h2>Email Verification</h2>
@@ -112,14 +162,15 @@
         <input type="text" placeholder="OTP" id="otp" name="otp" required>
         <button id="otp-verify-button"  onclick="verifyEmailOTP()">Verify</button>
     </div>
-</div>
+</div>-->
 
 <script>
     function validateForm() {
-        var email = document.getElementById('email').value;
+        var url = document.getElementById('url').value;
+        /*var email = document.getElementById('email').value;
         var mobile = document.getElementById('mobile').value;
         var category = document.getElementById('category').value;
-        var url = document.getElementById('url').value;
+        
     
         // Email validation
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -146,6 +197,11 @@
         if (!urlRegex.test(url)) {
             alert('Please enter a valid URL.');
             return false;
+        }*/
+        var urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+        if (!urlRegex.test(url)) {
+            alert('Please enter a valid URL.');
+            return false;
         }
     
         SubmitForm();
@@ -162,15 +218,15 @@
         // Get the CSRF token from the cookie
         $.ajax({
             type: 'POST',
-            url: '/ugcnet-student-save/',
+            url: '/rank/gate-new-student-save/',
             data: {
-                'email': $("input[name='email']").val(),
-                'mobile': $("input[name='mobile']").val(),
-                'category': $("select[name='category']").val(),
+                //'email': $("input[name='email']").val(),
+                //'mobile': $("input[name='mobile']").val(),
+                //'category': $("select[name='category']").val(),
                 'url': $("input[name='url']").val(),
-                'examname': 'UGC NET December 2023',
-                'subject': '87 Computer Science and Applications',
-                'shift': 'Morning',
+                //'examname': 'UGC NET December 2023',
+                //'subject': '87 Computer Science and Applications',
+                //'shift': 'Morning',
                 'csrfmiddlewaretoken': getCookie('csrftoken')
             },
             beforeSend: function(xhr, settings) {
@@ -178,12 +234,7 @@
             },
             success: function(data) {
                 if(data.status === 'success'){
-                    if(data.email_already_verified == '1'){
-                        window.location.href = '{% url "ugcnet_response" %}';
-                    }
-                    else{
-                        document.getElementById('emailVerifyModal').style.display = 'block';
-                    }
+                    window.location.href = '{% url "gatenewresponse" %}';
                 }
             },
             error: function() {
@@ -193,7 +244,7 @@
         });
     }
 
-    function verifyEmailOTP() {
+    /*function verifyEmailOTP() {
         var otp = document.getElementById('otp').value;
         // Send the OTP to the server for verification
         $.ajax({
@@ -218,7 +269,7 @@
                 alert(data.error);
             }
         });
-    }
+    }*/
     // Helper function to get the CSRF token from cookies
     function getCookie(name) {
         var cookieValue = null;

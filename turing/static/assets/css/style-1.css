@@ -427,7 +427,7 @@ body{
     color: #000;
     font-size: 16px;
     color:#fff;
-    margin:10px 10px 0px 10px;
+    margin:10px 8px 0px 8px;
     cursor: pointer;
     /*clip-path: polygon(0 12px, 10px 0, calc(100% - 10px) 0, 100% 12px, 100% 100%, 0 100%); this is old*/
     clip-path: polygon(0 15px, 10px 0, calc(100% - 10px) 0, 100% 15px, 100% 100%, 0 100%);
@@ -475,7 +475,7 @@ body{
     color: #FFFFFF;
     border:1px solid #dcdcdc;
     font-size: 16px;
-    margin:10px 10px 0px 10px;
+    margin:10px 8px 0px 8px;
     text-align: center;
     cursor: pointer;clip-path: polygon(0 0, 100% 0, 100% 60%, 70% 100%, 30% 100%, 0 60%);
     border-radius: 5px;
@@ -520,7 +520,7 @@ body{
     border: 1px solid #dcdcdc;
     font-size: 16px;
     text-align: center;
-    margin:5px 5px 0px 5px;
+    margin:5px 3px 0px 3px;
     clip-path: circle(40%);
 }
 .instruction-marked-for-review-button-2{
@@ -532,7 +532,7 @@ body{
     border: 1px solid #dcdcdc;
     font-size: 16px;
     text-align: center;
-    margin:5px 5px 0px 5px;
+    margin:5px 3px 0px 3px;
     clip-path: circle(40%);
     cursor: pointer;
 }
@@ -607,7 +607,7 @@ body{
     font-size:16px;
     width: 40px; /* Set the width to match the image */
     height: 40px; /* Set the height to match the image */
-    margin:10px 10px 0 10px;
+    margin:10px 8px 0 8px;
     cursor: pointer;
 }
 
@@ -630,7 +630,7 @@ body{
     padding:5px;
     padding-left:0px;
     display: block;
-    margin:10px 10px 0px 10px;
+    margin:10px 8px 0px 8px;
     font-size:16px;
     cursor: pointer;
 }
@@ -639,7 +639,7 @@ body{
     height:38px;
     width:40px;
     padding:5px;
-    margin:10px 10px 0px 10px;
+    margin:10px 8px 0px 8px;
     font-size:16px;
 }
 
@@ -765,7 +765,7 @@ body{
 }
 .question-mcq-msq{
     display:flex;
-    max-height:500px;
+    max-height:auto;
     max-width: 1200px;
     margin:10px 20px 5px 10px;
 }
@@ -967,13 +967,14 @@ body{
         overflow:auto;
     }
     .top{
-        height:19vh;
+        height:23vh;
         width:100vw;
         display: flex;
         flex-direction: column;
         /*overflow: hidden;*/
     }
     .top-1{
+        height:7vh;
         width:100%;
         display: flex;
         white-space: nowrap;
@@ -1026,8 +1027,10 @@ body{
         border:1px solid #dcdcdc;
     }
     .top-2{
+        height:7vh;
         display: flex;
         background-color: #19c5ff;
+        align-items: center;
         padding:5px 0px;
     }
     .top-2-left{
@@ -1062,6 +1065,7 @@ body{
         padding:5px 10px 5px 10px;
     }
     .top-3{
+        height:9vh;
         display: flex;
         flex-wrap: nowrap; /* Prevent items from wrapping to the next line */
         overflow-x: auto; /* Enable horizontal scrolling if content overflows */
@@ -1222,7 +1226,7 @@ body{
     }
 
     .tab-question{
-        height:65vh;
+        height:61vh;
         width:98.5vw;
         display: flex;
         flex-direction: column;
@@ -1235,7 +1239,7 @@ body{
         flex: 1;
     }
     .tab-question-view{
-        max-height:500px;
+        max-height:auto;
         max-width:100%;
         margin:10px;
     }
@@ -1335,14 +1339,18 @@ body{
         font-size:13px;
     }
     .logo p{
+        display: none;
         font-size:12px;
     }
+    .inst-content{
+        padding:10px;
+    }
     #inst-next-button{
-        padding:5px 10px 5px 10px;
+        padding:7px 30px;
         font-size:14px;
     }
     #inst-previous-button{
-        padding:5px 10px 5px 10px;
+        padding:7px 30px;
         font-size:14px;
     }
     #inst-begin-button{

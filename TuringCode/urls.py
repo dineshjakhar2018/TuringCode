@@ -21,5 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('turing.urls')),
     path('rank/',include('rank.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]

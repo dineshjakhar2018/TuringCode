@@ -30,9 +30,9 @@ from django.utils.html import strip_tags
 
 def index(request):
     try:
-        Courses = course.objects.filter(status = 1)
-        TestSeries = testseries.objects.filter(status = 1)
-        Content = IndexContent.objects.get(status=1)
+        Courses = course.objects.filter(status = 1).order_by('-id')
+        TestSeries = testseries.objects.filter(status = 1).order_by('-id')
+        Content = IndexContent.objects.filter(status=1).order_by('-id').first()
         return render(request, 'index.html',{'Courses' : Courses,'TestSeries' : TestSeries,'Content' : Content})
     except:
         return render(request,'index.html')
@@ -72,13 +72,10 @@ def Contact_Form(request):
 
 def pyp(request,exam_name):
     try:
-        if exam_name == 'gate-cs':
-            gate_cs_pyq = testseries.objects.get(id=6)
-            return render(request,'pyp.html',{'exam' :gate_cs_pyq})
-        else:
-            pass
+        gate_cs_pyq = testseries.objects.get(slug=exam_name)
+        return render(request,'pyp.html',{'exam' :gate_cs_pyq})
     except:
-        pass
+        return redirect('')
 
 def pyp_solution(request,test_slug):
     try:
@@ -1254,9 +1251,11 @@ def save_elapsed_time_to_database(request):
             StudentAnswer.time_taken = StudentAnswer.time_taken + 2
             StudentAnswer.save()
 
-
-            return JsonResponse({'status': 'success'})
-
+            if TestStatus.completed == 1:
+                return JsonResponse({'status': 'error','completed' : '1','message': 'Something went wrong please restart your test'})
+            else:
+                return JsonResponse({'status': 'success'})
+            
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
     except Exception as e:
         print("problem = ", e)
@@ -1737,11 +1736,13 @@ def TestSubmit(request):
             TestStatus.incomplete = 0
             TestStatus.completed = 1
             TestStatus.save()
+
+            TestSeries = testseries.objects.get(id=Test.testseries_id)
             
-            return render(request,'test-feedback.html',{'TestSlug' : Test.slug,'TotalQuestion' : Test.total_question,'MaximumMarks' : Test.total_marks,'TotalAttemptQuestion':TotalAttemptQuestion,'TotalLeftQuestion': TotalLeftQuestion,'TotalTime' : TotalTime,'TotalUseTime' : TotalUseTime})
+            return render(request,'test-feedback.html',{'TestSlug' : Test.slug,'TestSeriesSlug' : TestSeries.slug,'TotalQuestion' : Test.total_question,'MaximumMarks' : Test.total_marks,'TotalAttemptQuestion':TotalAttemptQuestion,'TotalLeftQuestion': TotalLeftQuestion,'TotalTime' : TotalTime,'TotalUseTime' : TotalUseTime})
             #print("Test Submit Successfully - 2")
         except Exception as e:
-            #print("new test submit error = ",e)
+            print("new test submit error = ",e)
             return render(request,'test-error.html')
     else:
         return render(request,'test-error.html')
@@ -2134,7 +2135,7 @@ def NewTestSeries(request):
                 pass
 
             TestSeries = testseries.objects.get(id=Test.testseries_id)
-            print("EXAM FOR = ",TestSeries.exam)
+            #print("EXAM FOR = ",TestSeries.exam)
             context = {
                 'Questions' : Questions,
                 'No_Of_Paper' : No_Of_Paper,
@@ -2154,6 +2155,7 @@ def NewTestSeries(request):
                 'TestSlug' : Test.slug,
                 'exam' : TestSeries.exam,
                 'student':Student,
+                'TestSeriesSlug' : TestSeries.slug,
             }
 
             request.session['TestId'] = TestId

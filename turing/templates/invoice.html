@@ -56,9 +56,9 @@
 
             <div class="bottom-button">
                 {% if context.type == 'course' %}
-                    <a href="http://turingcode.in/courses/"><input type="button" id="back-button" value="Back"></a>
+                    <a href="http://turingcode.in/courses/course-details/{{context.package_slug}}"><input type="button" id="back-button" value="Back"></a>
                 {% else %}
-                <a href="http://turingcode.in/test-series/"><input type="button" id="back-button" value="Back"></a>
+                <a href="http://turingcode.in/test-series/test-series-details/{{context.package_slug}}"><input type="button" id="back-button" value="Back"></a>
                 {% endif %}
             </div>
 

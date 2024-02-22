@@ -8,14 +8,16 @@
             <button id="zoom-button" onclick="toggleFullscreen()"><i class="material-icons">fullscreen</i></button>
             {% for x in PaperName %}
                 {% if x != None %}
-                    <input type="button" id="tab_paper-section-left-{{forloop.counter}}" value="{{ x }}" onclick="tab_goToPaper({{ forloop.counter }})">
-                {% endif %}
+                <!--<input type="button" id="tab_paper-section-left-{{forloop.counter}}" value="{{ x }}" onclick="tab_goToPaper({{ forloop.counter }})">-->
+                    <input type="button" id="tab_paper-section-left-{{forloop.counter}}" value="{% if x|length > 25 %}{{ x|slice:":25" }}...{% else %}{{ x }}{% endif %}" onclick="tab_goToPaper({{ forloop.counter }})">
+                
+                    {% endif %}
             {% endfor %}
         </div>
         
         <div class="top-2">
             <div class="top-2-left">
-                <input type="button" id="back-button" value="Back">
+                <a href="http://127.0.0.1:8000/test-series/test-series-details/{{TestSeriesSlug}}"> <input type="button" id="back-button" value="Quit Test"> </a>
             </div>
             <div class="top-2-right">
                 <p>Time Left : <span id="tab_countdown">  </span></p>
@@ -247,7 +249,7 @@
             <input type="button" id="tab-mark-for-review" onclick="tab_goToMarkedForReview()" value="Mark for Review & Next">
         </div>
         <div class="top-6">
-            <input type="submit" id="tab-test-submit" value="Submit">
+            <input type="button" id="tab-test-submit" onclick="tab_onSubmitForm()" value="Submit">
             <input type="button" id="tab-save-next" onclick="tab_nextPage()" value="Save & Next">
         </div>
 </div>
@@ -1546,7 +1548,20 @@
 
 
 
+              //test final submit 
+            function tab_onSubmitForm() {
+                // Show the confirmation dialog
+                var result = window.confirm("Are you sure you want to submit the test!");
 
+                if (result) {
+                    // User clicked "OK" (Submit), proceed with form submission
+                    window.location.href = 'test-submit/?test={{TestSlug}}';
+                    return true;
+                } else {
+                    // User clicked "Cancel", prevent form submission
+                    return false;
+                }
+            }
 
 
 

@@ -11,6 +11,19 @@
         <link rel="stylesheet" href="{% static 'assets/css/rank-style-1.css'%}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
+        <script>
+            document.addEventListener('keydown', function (e) {
+              if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                //alert('View source is disabled.');
+              }
+            });
+        
+            document.addEventListener('contextmenu', function (e) {
+              e.preventDefault();
+              //alert('Right-click is disabled.');
+            });
+          </script>
     </head>
     <body>
        
@@ -86,24 +99,70 @@
                     <div class="faq-container">
 
                         <div class="faq-question" onclick="toggleFAQ('answer1')">
-                            <label>Q: How does the UGC NET rank predictor work?</label>
+                            <label>What information is required from the student to use the Turing Code GATE 2024 Rank Predictor?</label>
                             <div class="icon" id="icon1">+</div>
                         </div>
                         <div class="faq-answer" id="answer1">
-                            <p>The UGC NET rank predictor uses a predictive algorithm based on historical data and trends to estimate your rank
-                                based on your performance in the mock tests and other relevant parameters.</p>
+                            <p>To use the Turing Code GATE 2024 Rank Predictor, you need to provide basic information
+                                 such as your name and email. Additionally, you'll be asked to submit your response sheet for
+                                  accurate calculations.</p>
                         </div>
 
                         <div class="faq-question" onclick="toggleFAQ('answer2')">
-                            <label>Q: Can I trust the predicted rank?</label>
+                            <label> How does the email verification process work in the Turing Code GATE 2024 Rank Predictor? </label>
                             <div class="icon" id="icon2">+</div>
                         </div>
                         <div class="faq-answer" id="answer2">
-                            <p>The predicted rank is an estimate and should be taken as a reference. Actual exam results may vary, and the
-                                predictor aims to provide a rough idea based on available data.</p>
+                            <p>After entering your email, the Turing Code GATE 2024 Rank Predictor ensures security through OTP verification.
+                                 This step is crucial to validate your identity and provide personalized results.</p>
                         </div>
 
-                        <!-- Add more FAQ items as needed -->
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> What information will I have access to after completing the verification process? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>Once your email is verified, you can view your total marks, All India Rank (AIR), accuracy, approximate GATE score, and detailed 
+                                question-wise performance, including the number of attempted 1-mark and 2-mark questions.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> How does the Turing Code GATE 2024 Rank Predictor calculate the All India Rank (AIR)? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>The Turing Code GATE 2024 Rank Predictor estimates the All India Rank based on your response sheet and compares it with historical GATE data, ensuring a
+                                 comprehensive and accurate prediction of your standing among all candidates.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label> Can I see a breakdown of my performance, including the number of correct 1-mark and 2-mark questions attempted? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p> Yes, the Turing Code GATE 2024 Rank Predictor provides detailed insights into your performance, including the number
+                                 of correct 1-mark and 2-mark
+                                 questions attempted. This breakdown helps you understand your strengths and areas for improvement.</p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label>  How does the Turing Code GATE 2024 Rank Predictor calculate the approximate GATE Score? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p> The approximate GATE Score is calculated by the Turing Code GATE 2024 Rank Predictor based on
+                                 your responses and the official answer key. </p>
+                        </div>
+
+                        <div class="faq-question" onclick="toggleFAQ('answer2')">
+                            <label>  Can I get information on the approximate qualifying marks category-wise? </label>
+                            <div class="icon" id="icon2">+</div>
+                        </div>
+                        <div class="faq-answer" id="answer2">
+                            <p>  Yes, the Turing Code GATE 2024 Rank Predictor provides an estimate of the qualifying marks category-wise.
+                                 This information helps you
+                                 gauge your performance in comparison to the qualifying thresholds set for different categories.</p>
+                        </div>
 
                     </div>
 
@@ -199,7 +258,7 @@
         // Get the CSRF token from the cookie
         $.ajax({
             type: 'POST',
-            url: '/gate-student-response/',
+            url: '/rank/gate-student-response/',
             data: {
                 'name': $("input[name='name']").val(),
                 'email': $("input[name='email']").val(),
@@ -224,14 +283,13 @@
                         alert(data.response-error);
                     }
                     else{
-                        alert('Something went wrong, please try again');
+                        alert('Something went wrong, please try again.');
                     }
                 }
             },
                     
             error: function() {
-                alert('Something went wrong, please try again');
-                
+                alert('Something went wrong, please try again.');
             }
         });
     }
@@ -242,7 +300,7 @@
         // Send the OTP to the server for verification
         $.ajax({
             type: 'POST',
-            url: '/gate-verify-email-otp/',
+            url: '/rank/gate-verify-email-otp/',
             data: {
                 'otp': otp,
                 'csrfmiddlewaretoken': getCookie('csrftoken')

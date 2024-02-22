@@ -3,6 +3,9 @@ from django.db import models
 ExamShift = (
     ('Morning','Morning'),
     ('Afternoon','Afternoon'),
+    ('CS1','CS1'),
+    ('CS2','CS2'),
+    ('DA','DA'),
 )
 ExamSession = (
     ('June','June'),
@@ -21,8 +24,8 @@ QuestionType = (
 )
 
 Subject = (
-    ('Computer Science & Information Technology','Computer Science & Information Technology'),
-    ('Data Science and Artificial Intelligence','Data Science and Artificial Intelligence')
+    ('COMPUTER SCIENCE AND INFORMATION TECHNOLOGY','COMPUTER SCIENCE AND INFORMATION TECHNOLOGY'),
+    ('DATA SCIENCE AND ARTIFICIAL INTELLIGENCE',' DATA SCIENCE AND ARTIFICIAL INTELLIGENCE')
 )
 
 TotalShift = (
@@ -38,7 +41,7 @@ Marks = (
 NegativeMarks = (
     (0,0),
     (0.33,0.33),
-    (0.33,0.33)
+    (0.66,0.66)
 )
 
 Category = (
@@ -96,6 +99,7 @@ class GateExam(models.Model):
     noofshift = models.IntegerField(null=False,default=1,choices=TotalShift)
     shift = models.CharField(null=False,max_length=10,choices=ExamShift)
     year = models.IntegerField(null=True)
+    mean_top_marks = models.FloatField(null=False)
 
     class Meta:
         unique_together = ('subject','shift')
@@ -136,8 +140,59 @@ class GateQualifyMarks(models.Model):
 
 class GateAIRvsMarks(models.Model):
     exam = models.ForeignKey(GateExam,on_delete=models.CASCADE,null=False)
-    marks = models.IntegerField(null=False)
-    min_air = models.IntegerField(null=False)
-    max_air = models.IntegerField(null=False)
+    marks = models.FloatField(null=False)
+    air = models.IntegerField(null=False)
+
+
+#new gate rank predictor (if response sheet url)
+class GateNewExam(models.Model):
+    subject = models.CharField(null=False,max_length=255,choices=Subject)
+    noofshift = models.IntegerField(null=False,default=1,choices=TotalShift)
+    shift = models.CharField(null=False,max_length=10,choices=ExamShift)
+    year = models.IntegerField(null=True)
+    mean_top_marks = models.FloatField(null=False)
+
+    class Meta:
+        unique_together = ('subject','shift')
+
+class GateNewStudent(models.Model):
+    exam = models.ForeignKey(GateNewExam,on_delete=models.CASCADE,null=False)
+    name = models.CharField(null=False,max_length=100)
+    candidateid = models.CharField(null=False,max_length=20)
+    #email = models.CharField(null=False,max_length=100)
+    subject = models.CharField(null=False,max_length=100,choices=Subject)
+    shift = models.CharField(null=False,max_length=10,choices=ExamShift)
+    positive_marks = models.FloatField(null=False,max_length=100,default=0)
+    negative_marks = models.FloatField(null=False,max_length=100,default=0)
+    total_marks = models.FloatField(null=False,max_length=100,default=0)
+    attempted = models.IntegerField(null=False,default=0)
+    correct = models.IntegerField(null=False,default=0)
+    incorrect = models.IntegerField(null=False,default=0)
+    gatescore = models.IntegerField(null=False)
+    responseurl = models.TextField()
+
+    class Meta:
+        unique_together = ('candidateid', 'subject', 'shift')
+
+class GateNewAnswerKey(models.Model):
+    exam = models.ForeignKey(GateNewExam,on_delete=models.CASCADE,null=False)
+    q_id = models.IntegerField(null=False)
+    q_type = models.CharField(null=False,max_length=5,choices=QuestionType)
+    answer = models.CharField(null=False,max_length=20)
+    marks = models.IntegerField(null=False,choices=Marks)
+    negative_marks = models.FloatField(null=False,choices=NegativeMarks)
+
+    class Meta:
+        unique_together = ('exam','q_id')
+
+class GateNewQualifyMarks(models.Model):
+    exam = models.ForeignKey(GateNewExam,on_delete=models.CASCADE,null=False)
+    category = models.CharField(null=False,max_length=20,choices=Category)
+    marks = models.FloatField(null=False)
+
+class GateNewAIRvsMarks(models.Model):
+    exam = models.ForeignKey(GateNewExam,on_delete=models.CASCADE,null=False)
+    marks = models.FloatField(null=False)
+    air = models.IntegerField(null=False)
 
 

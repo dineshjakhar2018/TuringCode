@@ -109,11 +109,11 @@
                               </div>
                               <div class="test-details-content-button">
                                 {% if test.status == 1 %}
-                                    <a href="http://turingcode.in/test-series" target="_blank">
+                                <a href="http://127.0.0.1:8000/test-instruction-1/{{TestSeries.exam}}/{{test.slug}}" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'private'); return false;">
                                       <input type="button" id="test-start-button-1" value="Start">
                                     </a>
                                 {% else %}
-                                      <input type="button" id="test-expired-button-1" value="InActive">
+                                      <input type="button" id="test-expired-button-1" value="Inactive">
                                 {% endif %}
                               </div>
                           </div>
@@ -146,7 +146,7 @@
                                   <input type="button" id="test-start-button-1" value="Start">
                                 </a>
                             {% else %}
-                                  <input type="button" id="test-expired-button-1" value="InActive">
+                                  <input type="button" id="test-expired-button-1" value="Inactive">
                             {% endif %}
                               </div>
                           </div>                        

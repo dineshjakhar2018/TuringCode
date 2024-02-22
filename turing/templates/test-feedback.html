@@ -14,6 +14,19 @@
         <link rel="stylesheet" href="{% static 'assets/css/style-5.css' %}" type="text/css" media="all">
         <link rel="icon" type="image/png" href="{% static 'assets/img/icon.png' %}">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            document.addEventListener('keydown', function (e) {
+              if (e.code === 'KeyU' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                //alert('View source is disabled.');
+              }
+            });
+        
+            document.addEventListener('contextmenu', function (e) {
+              e.preventDefault();
+              //alert('Right-click is disabled.');
+            });
+          </script>
     </head>
     <body>
         <div class="content">
@@ -88,6 +101,7 @@
                         success: function(data) {
                             // Handle the success response, e.g., close the window
                             window.close();
+                            window.open('https://127.0.0.1:8000/test-series/test-series-details/test-comparison-report/{{TestSeriesSlug}}/{{TestSlug}}', '_blank');
                         },
                         error: function() {
                             alert('An error occurred while submitting the form.');
@@ -95,6 +109,7 @@
                     });
                 }
             });
+
         </script>
     </body>
 </html>

@@ -3,9 +3,10 @@ from autoslug import AutoSlugField
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.core.exceptions import PermissionDenied
-
+from ckeditor.fields import RichTextField
 
 SubjectName = (
+    ('CS Computer Science and Information Technology','CS Computer Science and Information Technology'),
     ('Computer Science','Computer Science'),
     ('Paper - 1','Paper - 1'),
     ('Paper - 2','Paper - 2'),
@@ -114,7 +115,7 @@ class testseries(models.Model):
     date = models.DateTimeField(auto_now=False, auto_now_add=False)
     #expire_date  = models.DateField(auto_now=False, auto_now_add=False)
     validity = models.IntegerField(null=False)
-    about = models.TextField()
+    about = RichTextField()
     exam = models.CharField(max_length=60,null=False,choices=Exam,default='GATE')
     status = models.BooleanField(null=False)
     slug = AutoSlugField(populate_from='title',null=True,unique=True,default=None)
@@ -130,7 +131,7 @@ class course(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=True)
     exam_for = models.CharField(max_length=50,choices=ExamName)
     poster = models.FileField(upload_to=course_poster_path,validators=[FileExtensionValidator( ['jpg','jpeg','png']) ])
-    about = models.TextField()
+    about = RichTextField()
     #expire_date = models.DateField(auto_now=False, auto_now_add=False)
     testseries = models.ForeignKey(testseries,null=True,blank=True,on_delete=models.DO_NOTHING)
     validity = models.IntegerField(null=False)
@@ -213,7 +214,7 @@ class question(models.Model):
     question_no = models.IntegerField(null=False)
     question_time = models.IntegerField(null=False)
     #question_img = models.FileField(upload_to=question_path,validators=[FileExtensionValidator( ['jpg','jpeg','png']) ])
-    question_text = models.TextField()
+    question_text = RichTextField()
     positive_marks = models.IntegerField(null=False)
     negative_marks = models.CharField(null=False,max_length=20)
     question_type = models.CharField(max_length=20,null=False,choices=QuestionType)
@@ -254,7 +255,7 @@ class question_options(models.Model):
     question_no = models.IntegerField(null=False)
     option_name = models.CharField(max_length=255,choices=OptionName)
     #option_img = models.FileField(upload_to=option_path,validators=[FileExtensionValidator( ['jpg','jpeg','png']) ])
-    option = models.TextField()
+    option = RichTextField()
 
     class Meta:
         unique_together = ('question', 'question_no','option_name')
@@ -379,8 +380,8 @@ class testseries_enroll(models.Model):
 
 class TestInstruction(models.Model):
     exam = models.CharField(max_length=60,null=False,choices=Exam)
-    instruction_1 = models.TextField()
-    instruction_2 = models.TextField()
+    instruction_1 = RichTextField()
+    instruction_2 = RichTextField()
 
 class Feedback(models.Model):
     student = models.ForeignKey(student,on_delete=models.CASCADE,null=True)
@@ -427,7 +428,7 @@ class IndexContent(models.Model):
     status = models.BooleanField(default=0,null=False)
 
 class AboutUs(models.Model):
-    about = models.TextField()
+    about = RichTextField()
     status = models.BooleanField(default=0,null=False)
 
 

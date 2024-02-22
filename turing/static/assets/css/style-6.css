@@ -467,7 +467,7 @@ body{
     flex-wrap: wrap;
     flex-direction: column;
     width:25vw;
-    height:20vh;
+    height:45vh;
     margin-top:20px;
     background-color: #fff;
     border-radius: 5px;
@@ -988,7 +988,7 @@ body{
 }
   
 .collapsible:after {
-    content: '\2304';
+    content: '+';
     font-weight: bold;
     float: right;
     margin-left: 0 0 0 5px;
@@ -996,7 +996,9 @@ body{
 }
   
 .active:after {
-    content: "\2303";
+    content: "-";
+    margin-left: 0 0 0 5px;
+    font-size:15px;
 }
   
 .list-content{
@@ -1166,6 +1168,9 @@ body{
  /*django template message style end here*/
 
 @media (max-width: 768px) {
+    /*.header{
+        position: fixed;
+    }*/
     .logo{
         margin:10px;
     }
@@ -1292,7 +1297,7 @@ body{
     }
 
     .contact-info{
-        height:18vh;
+        height:auto;
         width:100%;
     }
 
@@ -1300,15 +1305,16 @@ body{
         margin:20px;
     }
     #contact-textbox{
-        width:240px;
+        width:75vw;
     }
 
     .contact-content{
-        margin:20px;
+        margin:20px 0px;
         width:auto;
+        padding:20px 10px
     }
     #contact-textarea{
-        width:240px;
+        width:75vw;
     }
 
     /*gate and net mobile style start*/
@@ -1413,7 +1419,43 @@ body{
         color:#ff4c4c;
         font-size:24px;
     }
-
+    .course-detail-content-1-inner{
+        flex-direction: column;
+    }
+    .course-details-content-1-inner-left{
+        width:100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .course-details-content-1-inner-right{
+        width:100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .collapsible {
+        width: 100%;
+        padding:15px 5px;
+    }
+    .collapsible h4{
+        width: 85%;
+        padding-right:5px;
+    }
+    .collapsible:after {
+        content: '+';
+        font-weight: bold;
+        float: right;
+        margin-left: 0 0 0 5px;
+        font-size:15px;
+        margin-right:20px;
+    }
+      
+    .active:after {
+        content: "-";
+        margin-left: 0 0 0 5px;
+        font-size:15px;
+        margin-right:20px;
+    }
     /*update course style end here*/
     .course-contents{
         margin:0px;
@@ -1428,17 +1470,24 @@ body{
         border-radius: 2px;
     }
     .course-detail-content-2{
-        width:92vw;
+        width:95vw;
         margin:5px;
     }
     .course-detail-content-2-inner{
         border:1px solid #dcdcdc;
         border-radius: 5px;
         border-bottom:0px;
-        margin-right:10px;
+        margin-right:12px;
+        overflow-x: hidden;
     }
     .about-course-content{
         margin-right:10px;
+    }
+    #video-content-2-inner-button{
+        margin-right:10px;
+    }
+    .fa{
+        margin-right: 10px;;
     }
     /* Course details style end*/
 

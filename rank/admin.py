@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UgcNetStudent,UgcNetAnswerKey,UgcNetExam,UgcNetExpectedCutOff,GateExam,GateAnswerKey,GateStudent,GateQualifyMarks,GateAIRvsMarks
+from .models import UgcNetStudent,UgcNetAnswerKey,UgcNetExam,UgcNetExpectedCutOff,GateExam,GateAnswerKey,GateStudent,GateQualifyMarks,GateAIRvsMarks,GateNewExam,GateNewAnswerKey,GateNewStudent,GateNewQualifyMarks,GateNewAIRvsMarks
 
 #ugc exam rank predictor
 
@@ -26,7 +26,7 @@ admin.site.register(UgcNetExpectedCutOff,UgcNetExpectedCutOffAdmin)
 
 #gate rank 
 class GateExamAdmin(admin.ModelAdmin):
-    list_display = ('id','subject', 'noofshift', 'shift', 'year')
+    list_display = ('id','subject', 'noofshift', 'shift', 'year','mean_top_marks')
 
 class GateStudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'subject', 'shift', 'positive_marks', 'negative_marks', 'total_marks', 'attempted', 'correct', 'incorrect', 'gatescore')
@@ -40,7 +40,7 @@ class GateQualifyMarksAdmin(admin.ModelAdmin):
     list_display = ('id','category', 'marks', 'exam')
 
 class GateAIRvsMarksAdmin(admin.ModelAdmin):
-    list_display = ('id','marks', 'min_air', 'max_air', 'exam')
+    list_display = ('id', 'marks','air', 'exam')
 
 
 # Register your models with the admin site
@@ -49,3 +49,30 @@ admin.site.register(GateStudent, GateStudentAdmin)
 admin.site.register(GateAnswerKey, GateAnswerKeyAdmin)
 admin.site.register(GateQualifyMarks, GateQualifyMarksAdmin)
 admin.site.register(GateAIRvsMarks, GateAIRvsMarksAdmin)
+
+
+#new gate rank(with url response)
+class GateNewExamAdmin(admin.ModelAdmin):
+    list_display = ('id','subject', 'noofshift', 'shift', 'year','mean_top_marks')
+
+class GateNewStudentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'candidateid', 'subject', 'shift', 'positive_marks', 'negative_marks', 'total_marks', 'attempted', 'correct', 'incorrect', 'gatescore')
+    list_filter = ('exam', 'subject', 'shift')
+    search_fields = ('name', 'candidateid')
+
+class GateNewAnswerKeyAdmin(admin.ModelAdmin):
+    list_display = ('id','q_id', 'q_type', 'answer', 'marks', 'negative_marks', 'exam')
+
+class GateNewQualifyMarksAdmin(admin.ModelAdmin):
+    list_display = ('id','category', 'marks', 'exam')
+
+class GateNewAIRvsMarksAdmin(admin.ModelAdmin):
+    list_display = ('id', 'marks','air', 'exam')
+
+
+# Register your models with the admin site
+admin.site.register(GateNewExam, GateNewExamAdmin)
+admin.site.register(GateNewStudent, GateNewStudentAdmin)
+admin.site.register(GateNewAnswerKey, GateNewAnswerKeyAdmin)
+admin.site.register(GateNewQualifyMarks, GateNewQualifyMarksAdmin)
+admin.site.register(GateNewAIRvsMarks, GateNewAIRvsMarksAdmin)
